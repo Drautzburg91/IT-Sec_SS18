@@ -271,12 +271,30 @@ Georg Mohr}
 %%% structure: \section \subsection \subsubsection \paragraph \subparagraph
 %%%
 
-\section{Einleitung}
+\section{Motivation}
+Im Zeitalter der Digitalisierung steigt der Grad der Vernetzung auch immer weiter an. Unternehmen, welche ihre Standorte über die ganze Welt verteilt haben, wollen Wege und Möglichkeiten haben ihre Arbeit sicher und Problemlos zu verrichten. Dafür ist es unerlässlich, dass verschiedene Standorte auf Ressourcen des anderen zugreifen können. Für solche Szenarien gibt es in der Netzwerktechnik und Netzwerkarchitektur verschiedene Lösungsansätze. 
+Jedoch darf dabei ein wichtiger Aspekt nicht vernachlässigt werden, denn jedes Unternehmen hat Betriebsmittel und Informationen, welche es nicht Gefahren von außen aussetzten will. An diesem Punkt kommt der Begriff IT-Sicherheit ins Spiel und genau dieses Umfeld um den Begriff „IT-Sicherheit“ wird im Rahmen des Praktikums zur Lehrveranstaltung „IT-Sicherheitsarchitekturen“ untersucht. 
+In den folgenden Kapiteln wird eine Problemstellung unter Laborbedingungen skizziert, welche ein Szenario wiederspiegelt, mit dem sich Unternehmen täglich konfrontiert sehen. Anschließend wird werden die Laborbedienungen und der Versuchsaufbau beschrieben. Aus der Problemstellung und dem Versuchsaufbau wird eine Lösung auf Grundlage, der damit zu Grunde liegenden Theorie, erarbeitet. Diese Lösung wird abschließend in die Laborumgebung implementiert und auf ihre Akzeptanz gegenüber der Problemstellung untersucht und in einem Fazit bewertet.   
 \section{Problemstellung}
-Zu Beginn wird auf die Laborumgebung und die zugrundeliegende Infrastruktur eingegangen. Anschließend wird wir  die zu lösende Aufgabenstellung der Laborübung vorgestellt. 
-\subsection{Laborumgebung}
-Das IT-Sicherheitslabor der HTWG Konstanz simuliert eine IT-Landschaft zweier Unternehmen. Die zwei Firmen werden mit den Namen Firma A und Firma B bezeichnet. 
+In diesem Kapitel wird die Laborumgebung eingeführt und beschrieben, sowie die damit verbundene Aufgaben-/Problemstellung skizziert.
+\subsection{Laborumgebung und Versuchsaufbau}
+Im Labor wird die IT-Landschaft zweier Unternehmen „A“ und „B“ simuliert. Jedes Unternehmen besitzt ein lokales LAN, an denen die pot. Mitarbeiter angeschlossen sind, zudem gibt es mehrere Server mit Hilfe derer verschiedene Dienste angeboten werden sollen. 
+Es folgt eine Liste an Diensten welche Angeboten werden sollen:
+Internetzugang von den Mitarbeiter-Computern.
+Zugang über HTTPS der Webseiten beider Unternehmen.
+Eine Virtuelle Kopplung der beiden Unternehmen mit Hilfe einer sog. Site-to-Site Verbindung.
+Jeder Mitarbeiter der Unternehmen soll die Möglichkeit haben, E-Mails über einen Mailsserver zu verschicken.  
+Eine weitere wichtige Komponente in dieser IT-Landschaft sind die externen und internen Firewalls, da diese den Grundstein für eine sichere Umgebung legen. In dieser IT-Landschaft gibt es insgesamt 4 Firewalls, jedes Unternehmen hat jeweils eine interne und externe Firewall. Hinter den externen Firewalls beider Unternehmen liegt jeweils die sog. DMZ – Demilitarisierte Zone. In dieser Zone stehen üblicherweise die Unternehmensserver, diese werden nach außen hin von der externen Firewall und nach innen von der internen Firewall geschützt. Jede Firewall läuft auf einem Server, somit besteht die IT-Landschaft insgesamt aus 4 Servern auf welchen die Firewalls laufen, 2 Servern, welche die jeweiligen Unternehmensserver simulieren und einem Server welcher außerhalb der externen Firewall das Internet simulieren soll (vgl. Abb. xxx).
+Jede dieser angesprochenen Komponenten muss entsprechen konfiguriert werden, damit die angesprochenen Dienste fehlerfrei funktionieren können.
+Technisch gesehen wird jeder dieser Server auf Grundlage einer virtuellen Maschine abgebildet.
+Jede dieser Maschinen hat Linux als Betriebssystem installiert und vorkonfiguriert, jedoch ohne zusätzliche Pakte, nur die reine Grundinstallation   
+Da die Implementierung und Installation aller dieser Dienste und der damit verbundenen Komponenten den Rahmen dieses Praktikums sprengen würde, werden die Aufgabenstellungen zuvor runtergebrochen. Die detaillierte Aufgabenstellung wird im nächsten Abschnitt eingeführt.
+
 \subsection{Aufgabenstellung}
+Wie schon im vorhergehenden Abschnitt beschrieben, gibt es mehrere Dienste, welche in der IT-Landschaft angeboten werden sollen. 
+In diesem Bericht, wird die Virtuelle Kopplung der Unternehmen „A“ und „B“ durch eine „Site-to-Site-“ oder auch „LAN-to-LAN-“ genannt -Verbindung implementiert. 
+Die Problemstellung gilt als gelöst, wenn es möglich ist, eine gesicherte Verbindung von Unternehmen A zu Unternehmen B aufzubauen. 
+
 \section{Theoretische Grundlagen}
 \subsection{Netzwerkarchitekturen}
 \subsection{Debian GNU Linux 7.11}
