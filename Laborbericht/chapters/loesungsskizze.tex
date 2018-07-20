@@ -3,4 +3,114 @@
 In diesem Kapitel wird sich mit dem Thema befasst, wie sich eine Side-to-Side VPN Verbindung, die die Firmen A und B wie in Kapitel \ref{laborumgebung} beschrieben verbindet.
 Dazu waren zu Beginn mehrere Vorüberlegungen zu tätigen. Dies sind zum einen, wie wird das innere Netz der Firmen A und B geschützt, dann welcher VPN Dienst kann für diesen Zweck verwendet werden und welche weiteren Strategien braucht es bei der Umsetzung der Security Policies der Firmen. 
 \subsection{Firewall}
-Wenn eine Firewall aufgebaut werden soll, muss sich zu beginn überlegt werden, welche allgemeine Strategie mit der Firewall gefahren werden soll. Das heißt sollen alle Verbindungen Standardmäßig freigegeben werden und nur explizit nicht erlaubt Verbindungen geblockt werden (Default-Allow-Strategy), oder sollen alle Verbindungen blockiert werden und nur die die explizit erlaubt wurden, geöffnet werden (Default-Deny-Strategy). Im Standardfall wird in Unternehmen, die Strategie Default-Deny verwendet, weshalb sich auch im Versuchsaufbau diese Strategie gewählt wurde. Eine Firewall wird mit Hilfe des Userspace-Programmes IPTABLES (siehe Kapitel \ref{iptables}) unter Linux realisiert. 
+Wenn eine Firewall aufgebaut werden soll, muss sich zu beginn überlegt werden, welche allgemeine Strategie mit der Firewall gefahren werden soll. Das heißt sollen alle Verbindungen Standardmäßig freigegeben werden und nur explizit nicht erlaubt Verbindungen geblockt werden (Default-Allow-Strategy), oder sollen alle Verbindungen blockiert werden und nur die die explizit erlaubt wurden, geöffnet werden (Default-Deny-Strategy). Im Standardfall wird in Unternehmen, die Strategie Default-Deny verwendet, weshalb auch im Versuchsaufbau diese Strategie gewählt wurde. Eine Firewall wird mit Hilfe des Userspace-Programmes IPTABLES (siehe Kapitel \ref{iptables}) unter Linux realisiert. Dafür wird eine Rules Datei (nachfolgend Skript genannt) angelegt, in dieser werden die Einstellungen und Regeln für die Firewall definiert. Zu Beginn des Skriptes wird der Interpreter für den Code angegeben. Dann wird begonnen die durch die Default Strategie vorgegebenen Default Policies umzusetzen (siehe Auflistung \ref{lst:defaultPolicy}). Dabei sagt das -P, dass die Policy angesprochen werden soll, das INPUT, OUTPUT und FORWARD bezieht sich auf die im Kapitel \ref{iptables} vorgestellten Chains. DROP sagt dabei aus, dass die eintreffenden Pakete, wenn keine weiteren Regeln definiert oder zutreffen nicht weitergeleitet und ``fallengelassen'' werden sollen.
+\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Default Policy IPTABLE},label=lst:defaultPolicy]
+#Verwenden der Tabelle FILTER
+*filter
+-P INPUT DROP
+-P OUTPUT DROP
+-P FORWARD DROP
+\end{lstlisting}
+\vspace{\baselineskip}
+Nach dem die Default Policy erfolgreich eingeführt wurde, werden die feingranulareren Regeln definiert. Dies setzt die Verwendung des Befehles -F voraus. Dieser löscht alle bisherigen Filterregeln, um die nach folgenden neu definierten Regeln einzuführen. Bei Linux ist dabei zu beachten das ein Teil der Interprozesskommunikation über das interne Netzwerk läuft. Dafür ist es nötig diese Kommunikation zuzulassen, dies geschieht wie in der nachfolgenden Auflistung \ref{lst:interprozess} zusehen ist. 
+\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Interprozesskommunikation zulassen},label=lst:interprozess]
+# Interprozesskommunikation Verbindungen erlauben
+-A INPUT -i lo -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT
+\end{lstlisting}
+\vspace{\baselineskip}
+Dabei sagt das -A an welche Chain diese Regel angehängt werden soll. Das -i ist dabei die Option über welches Netzwerkinterface das Paket eingegangen ist, beziehungsweise -o für das Paket versenden. In diesem Fall das ``lo'' Netzwerkinterface. Wenn alle Prüfregeln auf das Paket zutreffen wird mit -j entschieden wie mit dem Paket verfahren werden soll, in diesem Beispiel soll es mit ACCEPT akzeptiet werden. 
+\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Weitere allgemeine Firewallregeln},label=lst:allgemeineRegeln]
+# Erlaube ICMP Befehle
+-A INPUT -p icmp -j ACCEPT
+-A OUTPUT -p icmp -j ACCEPT
+
+# Erlaube SSH Verbindung
+-A INPUT -p tcp --dport 22 -j ACCEPT
+
+# Alle Verbindungen von innen nach aussen zulassen
+-A FORWARD -i eth0 -o eth1 -m state --state NEW -j ACCEPT
+
+# Erlaube nur bereits aufgebaute 
+# Verbindungen von aussen nach innen
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+\end{lstlisting}
+\vspace{\baselineskip}
+Die in Auflistung \ref{lst:allgemeineRegeln} dargestellten Regeln sind allgemeine Regeln für die Firewall, diese erlauben das empfangen von Pinganfragen, den Fernzugriff mittels SSH, alle neuen Verbindungen von innen nach außen und alle bereits aufgebauten Verbindungen beziehungsweiße alle Verbindungen die einen Bezug auf eine andere Verbindung besitzen. In der nachfolgenden Tabelle \ref*{tab:iptablesOptionen} werden die hier verwendeten Optionen nochmals näher beschrieben.
+\begin{table}[h]
+	\centering
+\begin{tabular}{|p{2cm}|p{14cm}|}
+	\hline 
+	Optionen & Beschreibung \\ 
+	\hline 
+	-p & Gibt das Protokoll an welches verwendet werden soll hier icmp(Ping), tcp \\ 
+	\hline 
+	-dport & Gibt den Destinationport an, auf den zugegriffen werden soll hier 22 \\ 
+	\hline
+	eth0,eth1 & bezieht sich auf das verwendete Netzwerkinterface \\ 
+	\hline 
+	-m state & die entreffenden Pakete sollen auf den Status überprüft werden \\ 
+	\hline 
+	--state & Status der eintreffenden Pakete, hier NEW, RELATED,ESTABLISHED \\ 
+	\hline 
+\end{tabular} 
+\caption{IPTABLES Optionen und Beschreibung} \label{tab:iptablesOptionen}
+\end{table}
+Nach den allgemeine Regeln müssen nun die VPN spezifischen Regeln definiert werden. Dazu muss man die auf den VPN Ports eintreffenden und ausgehenden Pakete betrachten. Diese Ports sind entweder 1194 oder 1195. In der Auflistung \ref{lst:VPNRegeln} sind VPN Regeln zusehen. Eine Besonderheit bei VPN ist das zum einen alle verbinungen die über das Netzwerkinterface tun0 eintreffenden Pakete ohne Überprüfung an das Inteface eth0 übergeben werden. Des weiteren wird noch die Tabelle NAT benötigt, was das ''*nat'' angibt. In dieser Tabelle gibt es die Chain POSTROUTING, über diese kann nachträglich der Verkehrsheader eines Paketes verändert werden. MASQUERADE hat dabei die Funktion das wenn ein Paket versendet wird die Source-IP-Adresse so verändert wird das nur noch die IP-Adresse des Firewallservers ersichtlich ist. Dies hat den Grund das von außen nicht ersichtlich wird, was sich für IP-Adressen hinter der Firewall befinden und es so Angreifern erschwert wird diese anzugreifen.
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Weitere VPN Firewallregeln},label=lst:VPNRegeln]
+# Erlaube alle Verbindungen auf den VPN Ports
+-A INPUT -i eth1 -p udp --dport 1194 -m state --state NEW -j ACCEPT
+-A INPUT -i eth1 -p udp --dport 1195 -m state --state NEW -j ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -i tun0 -j ACCEPT
+
+#Forwarding fuer die VPN Verbindungen
+-A FORWARD -i tun0 -o eth0 -m state --state NEW -j ACCEPT
+-A FORWARD -i eth0 -o tun0 -m state --state NEW -j ACCEPT
+-A FORWARD -i tun0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i eth0 -o tun0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+COMMIT
+
+#Verwenden der Tabelle NAT
+*nat
+
+#Loeschen der vorhandenen Regeln
+-F
+
+-A POSTROUTING -o eth1 -j MASQUERADE
+COMMIT
+\end{lstlisting}
+
+\subsection{VPN}
+\subsubsection{Server Firma A}
+\subsubsection{Client Firma B}
+
+
+
+
+
+
+
+
+
+
