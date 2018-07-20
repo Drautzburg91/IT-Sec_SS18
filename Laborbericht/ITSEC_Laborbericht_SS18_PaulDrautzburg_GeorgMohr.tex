@@ -33,7 +33,7 @@ titlepage,   %% only the titlepage (using titlepage-environment) appears on the 
 
 %%% babel: language set (can cause some conflicts with package ngerman)
 %%%        use it only for multi-language documents or non-german ones
-%\usepackage[ngerman]{babel}
+\usepackage[ngerman]{babel}
 
 %%% inputenc: coding of german special characters
 \usepackage[utf8]{inputenc}
@@ -280,15 +280,17 @@ In diesem Kapitel wird die Laborumgebung eingeführt und beschrieben, sowie die 
 \subsection{Laborumgebung und Versuchsaufbau}
 Im Labor wird die IT-Landschaft zweier Unternehmen „A“ und „B“ simuliert. Jedes Unternehmen besitzt ein lokales LAN, an denen die pot. Mitarbeiter angeschlossen sind, zudem gibt es mehrere Server mit Hilfe derer verschiedene Dienste angeboten werden sollen. 
 Es folgt eine Liste an Diensten welche Angeboten werden sollen:
-Internetzugang von den Mitarbeiter-Computern.
-Zugang über HTTPS der Webseiten beider Unternehmen.
-Eine Virtuelle Kopplung der beiden Unternehmen mit Hilfe einer sog. Site-to-Site Verbindung.
-Jeder Mitarbeiter der Unternehmen soll die Möglichkeit haben, E-Mails über einen Mailsserver zu verschicken.  
+\begin{itemize}
+\item Internetzugang von den Mitarbeiter-Computern.
+\item Zugang über HTTPS der Webseiten beider Unternehmen.
+\item Eine Virtuelle Kopplung der beiden Unternehmen mit Hilfe einer sog. Site-to-Site Verbindung.
+\item Jeder Mitarbeiter der Unternehmen soll die Möglichkeit haben, E-Mails über einen sicheren  Mailserver zu verschicken.  
+\end{itemize}
 Eine weitere wichtige Komponente in dieser IT-Landschaft sind die externen und internen Firewalls, da diese den Grundstein für eine sichere Umgebung legen. In dieser IT-Landschaft gibt es insgesamt 4 Firewalls, jedes Unternehmen hat jeweils eine interne und externe Firewall. Hinter den externen Firewalls beider Unternehmen liegt jeweils die sog. DMZ – Demilitarisierte Zone. In dieser Zone stehen üblicherweise die Unternehmensserver, diese werden nach außen hin von der externen Firewall und nach innen von der internen Firewall geschützt. Jede Firewall läuft auf einem Server, somit besteht die IT-Landschaft insgesamt aus 4 Servern auf welchen die Firewalls laufen, 2 Servern, welche die jeweiligen Unternehmensserver simulieren und einem Server welcher außerhalb der externen Firewall das Internet simulieren soll (vgl. Abb. xxx).
 Jede dieser angesprochenen Komponenten muss entsprechen konfiguriert werden, damit die angesprochenen Dienste fehlerfrei funktionieren können.
 Technisch gesehen wird jeder dieser Server auf Grundlage einer virtuellen Maschine abgebildet.
 Jede dieser Maschinen hat Linux als Betriebssystem installiert und vorkonfiguriert, jedoch ohne zusätzliche Pakte, nur die reine Grundinstallation   
-Da die Implementierung und Installation aller dieser Dienste und der damit verbundenen Komponenten den Rahmen dieses Praktikums sprengen würde, werden die Aufgabenstellungen zuvor runtergebrochen. Die detaillierte Aufgabenstellung wird im nächsten Abschnitt eingeführt.
+Da die Implementierung und Installation aller dieser Dienste und der damit verbundenen Komponenten den Rahmen dieses Praktikums sprengen würde, werden die Aufgabenstellungen zuvor runter gebrochen. Die detaillierte Aufgabenstellung wird im nächsten Abschnitt eingeführt.
 
 \subsection{Aufgabenstellung}
 Wie schon im vorhergehenden Abschnitt beschrieben, gibt es mehrere Dienste, welche in der IT-Landschaft angeboten werden sollen. 
@@ -300,9 +302,27 @@ Die Problemstellung gilt als gelöst, wenn es möglich ist, dass Unternehmen A e
 \section{Theoretische Grundlagen}
 In diesem Kapitel werden die theoretischen Grundlagen eingeführt, welche im Kontext der Aufgabestellung benötigt werden. Dies beschränkt sich auf drei Bereiche, die Netzwerkarchitekturen, Debian GNU Linux 7.11 und IP-Tables. Jede dieser genannten Bereiche wird innerhalb dieses Kapitels eingeführt und in den Aufgabenkontext eingeordnet. 
 \subsection{Netzwerkarchitekturen}
-Der Bereich Netzwerkarchitekturen ist ein sehr breites Gebiet, deshalb muss zuvor anhand der Anforderungen aus der Aufgabenstellung abgegrenzt werden.
-Das Netzwerk des Labors besteht netzwerktechnisch grundlegend aus drei Bereichen dem Intranet, der Demilitarisierten Zone und dem Internet. 
-Das Intranet zeichnet sich dadurch aus, dass es hinter einer internen Firewall liegt ... 
+Der Bereich Netzwerkarchitekturen ist ein sehr breites Gebiet, deshalb muss dieser zuvor anhand der Anforderungen der Aufgabenstellung abgegrenzt werden.
+Das Netzwerk des Labors besteht netzwerktechnisch aus drei Bereichen dem Intranet, der Demilitarisierten Zone und dem Internet. 
+Diese Begriffe werden folgend für den Rahmen dieses Berichts definiert.
+
+\begin{quotation}
+\item["Intranet"]
+
+Nach dem Gabler Wirtschaftslexikon wird ein Intranet als " ein unternehmensinternes Kommunikationsnetz, in dem Daten auf der Basis der Protokollfamilie TCP/IP übertragen werden" definiert. In dieser Arbeit wird der Aspekt der Protokollfamilie "TCP/IP" von vorrangiger Bedeutung sein. Der Punkt des "unternehmensinternen Kommunikationsnetzes", kann für diese Arbeit in den Hintergrund gestellt werden, da sich das Laborpraktikum auf die technischen Umsetzung beschränkt. 
+Ein weiterer wichtiger Aspekt des Intranets ist, dass es nur autorisierten Benutzern gestattet werden soll zuzugreifen.  
+
+\item["Demilitarisierte Zone"]
+
+Der Begriff demilitarisierte Zone kommt ursprünglich aus dem militärischen Umfeld und beschreibt eine Zone oder Bereich in der sich keine militärischen Streitkräfte gegenüberstehen dürfen, quasi eine neutrale Zone. In der Netzwerktechnik wird dieser Begriff benutzt, um eine Zone zu beschreiben welche sich zwischen zwei Schutzeinrichtungen befindet. Bei diesen Schutzeinrichtungen handelt es sind meistens um die externe Firewall und die interne Firewall. Der Hintergrund dieses Vorgehens, ist der der Sicherheit, es soll verhindern, dass jede Komponente  innerhalb der DMZ keinen Schaden auf das Intranet ausübt im Falle eines Angriffs.
+
+\end{quotation}
+
+
+
+
+
+(Quelle https://www.iternas.com/dmz)
 
 \subsection{Debian GNU Linux 7.11}
 \subsection{IP-Tables}
