@@ -33,7 +33,7 @@ titlepage,   %% only the titlepage (using titlepage-environment) appears on the 
 
 %%% babel: language set (can cause some conflicts with package ngerman)
 %%%        use it only for multi-language documents or non-german ones
-%\usepackage[ngerman]{babel}
+\usepackage[ngerman]{babel}
 
 %%% inputenc: coding of german special characters
 \usepackage[utf8]{inputenc}
@@ -45,6 +45,8 @@ titlepage,   %% only the titlepage (using titlepage-environment) appears on the 
 %%%
 %%% technical packages
 %%%
+
+\usepackage{multirow}
 
 %%% amsmath, amssymb, amstext: support for mathematics
 \usepackage{amsmath,amssymb,amstext}
@@ -282,6 +284,15 @@ In diesem Kapitel wird die Laborumgebung eingeführt und beschrieben, sowie die 
 \label{laborumgebung}
 Im Labor wird die IT-Landschaft zweier Unternehmen „A“ und „B“ simuliert. Jedes Unternehmen besitzt ein lokales LAN, an denen die pot. Mitarbeiter angeschlossen sind, zudem gibt es mehrere Server mit Hilfe derer verschiedene Dienste angeboten werden sollen. 
 Es folgt eine Liste an Diensten welche Angeboten werden sollen:
+
+\begin{itemize}
+\item Internetzugang von den Mitarbeiter-Computern.
+\item Zugang über HTTPS der Webseiten beider Unternehmen.
+\item Eine Virtuelle Kopplung der beiden Unternehmen mit Hilfe einer sog. Site-to-Site Verbindung.
+\item Jeder Mitarbeiter der Unternehmen soll die Möglichkeit haben, E-Mails über einen sicheren  Mailserver zu verschicken.  
+\end{itemize}
+Eine weitere wichtige Komponente in dieser IT-Landschaft sind die externen und internen Firewalls, da diese den Grundstein für eine sichere Umgebung legen. In dieser IT-Landschaft gibt es insgesamt 4 Firewalls, jedes Unternehmen hat jeweils eine interne und externe Firewall. Hinter den externen Firewalls beider Unternehmen liegt jeweils die sog. DMZ – Demilitarisierte Zone. In dieser Zone stehen üblicherweise die Unternehmensserver, diese werden nach außen hin von der externen Firewall und nach innen von der internen Firewall geschützt. Jede Firewall läuft auf einem Server, somit besteht die IT-Landschaft insgesamt aus 4 Servern auf welchen die Firewalls laufen, 2 Servern, welche die jeweiligen Unternehmensserver simulieren und einem Server welcher außerhalb der externen Firewall das Internet simulieren soll (vgl. Abb. xxx).
+
 Internetzugang von den Mitarbeiter-Computern.
 Zugang über HTTPS der Webseiten beider Unternehmen.
 Eine Virtuelle Kopplung der beiden Unternehmen mit Hilfe einer sog. Site-to-Site Verbindung.
@@ -293,10 +304,11 @@ Eine weitere wichtige Komponente in dieser IT-Landschaft sind die externen und i
 	\caption{Schematischer Aufbau der Laborumgebung im IT-Sicherheitslabor \cite{JueNeuSaDue}}
 	\label{fig:appStat}
 \end{figure}
+
 Jede dieser angesprochenen Komponenten muss entsprechen konfiguriert werden, damit die angesprochenen Dienste fehlerfrei funktionieren können.
 Technisch gesehen wird jeder dieser Server auf Grundlage einer virtuellen Maschine abgebildet.
 Jede dieser Maschinen hat Linux als Betriebssystem installiert und vorkonfiguriert, jedoch ohne zusätzliche Pakte, nur die reine Grundinstallation   
-Da die Implementierung und Installation aller dieser Dienste und der damit verbundenen Komponenten den Rahmen dieses Praktikums sprengen würde, werden die Aufgabenstellungen zuvor runtergebrochen. Die detaillierte Aufgabenstellung wird im nächsten Abschnitt eingeführt.
+Da die Implementierung und Installation aller dieser Dienste und der damit verbundenen Komponenten den Rahmen dieses Praktikums sprengen würde, werden die Aufgabenstellungen zuvor runter gebrochen. Die detaillierte Aufgabenstellung wird im nächsten Abschnitt eingeführt.
 
 \subsection{Aufgabenstellung}
 Wie schon im vorhergehenden Abschnitt beschrieben, gibt es mehrere Dienste, welche in der IT-Landschaft angeboten werden sollen. 
@@ -308,9 +320,64 @@ Die Problemstellung gilt als gelöst, wenn es möglich ist, dass Unternehmen A e
 \section{Theoretische Grundlagen}
 In diesem Kapitel werden die theoretischen Grundlagen eingeführt, welche im Kontext der Aufgabestellung benötigt werden. Dies beschränkt sich auf drei Bereiche, die Netzwerkarchitekturen, Debian GNU Linux 7.11 und IP-Tables. Jede dieser genannten Bereiche wird innerhalb dieses Kapitels eingeführt und in den Aufgabenkontext eingeordnet. 
 \subsection{Netzwerkarchitekturen}
-Der Bereich Netzwerkarchitekturen ist ein sehr breites Gebiet, deshalb muss zuvor anhand der Anforderungen aus der Aufgabenstellung abgegrenzt werden.
-Das Netzwerk des Labors besteht netzwerktechnisch grundlegend aus drei Bereichen dem Intranet, der Demilitarisierten Zone und dem Internet. 
-Das Intranet zeichnet sich dadurch aus, dass es hinter einer internen Firewall liegt ... 
+Der Bereich Netzwerkarchitekturen ist ein sehr breites Gebiet, deshalb muss dieser zuvor anhand der Anforderungen der Aufgabenstellung abgegrenzt werden.
+\subsubsection{Die Begriffe Intranet, DMZ und Internet}
+Das Netzwerk des Labors besteht netzwerktechnisch aus drei Bereichen dem Intranet, der Demilitarisierten Zone und dem Internet. 
+Diese Begriffe werden folgend für den Rahmen dieses Berichts definiert und in den Kontext der Problemstellung eingeordnet.
+\begin{quotation}
+\item["Intranet"]
+
+Nach dem Gabler Wirtschaftslexikon wird ein Intranet als " ein unternehmensinternes Kommunikationsnetz, in dem Daten auf der Basis der Protokollfamilie TCP/IP übertragen werden" definiert. In dieser Arbeit wird der Aspekt der Protokollfamilie "TCP/IP" von vorrangiger Bedeutung sein. Der Punkt des "unternehmensinternen Kommunikationsnetzes", kann für diese Arbeit in den Hintergrund gestellt werden, da sich das Laborpraktikum auf die technischen Umsetzung beschränkt. 
+Ein weiterer wichtiger Aspekt des Intranets ist, dass es nur autorisierten Benutzern gestattet werden soll zuzugreifen.  
+
+\item["Demilitarisierte Zone"]
+
+Der Begriff demilitarisierte Zone kommt ursprünglich aus dem militärischen Umfeld und beschreibt eine Zone oder Bereich in der sich keine militärischen Streitkräfte gegenüberstehen dürfen, quasi ein neutraler Bereich. 
+In der Netzwerktechnik wird dieser Begriff benutzt, um eine Zone zu beschreiben welche sich zwischen zwei Schutzeinrichtungen befindet. Bei diesen Schutzeinrichtungen handelt es sind meistens um eine externe Firewall und eine interne Firewall. Der Hintergrund für die Einrichtung einer DMZ ist es die Sicherheit der Komponenten und Teilnehmer eines Intranets zu sichern, falls es einen Angriff auf die Komponenten innerhalb der DMZ gibt und diese korumpiert werden sollten. Die Komponenten innerhalb einer DMZ werden als potentielle Opfer oder "Victims" bezeichnet. Es handelt sich hier meistens um Server welche nach einem Schadensfall einfach durch einen Reboot wiederhergestellt werden können. 
+Als Alternative könnte statt der DMZ ein sog. Application Layer Gateway (APL) eingesetzt werden. Dieser zeichnet sich dadurch, dass er den Netzwerkverkehr komplett auftrennt und sich nach allen Seiten als Kommunikationspartner verhält. Zudem wäre auch eine Lösung aus DMZ und APL\cite{intra1}. Im Rahmen des Praktikums wird jedoch lediglich eine DMZ eingesetzt.
+
+\item["Internet"]
+Das Internet ist "ein weltumspannendes, heterogenes Computernetzwerk, das auf dem Netzwerkprotokoll TCP/IP basiert. Über das Internet werden zahlreiche Dienste wie z.B. E-Mail, FTP, World Wide Web (WWW) oder IRC angeboten" \cite{Gab-Internet}. Ein wichtiger Punkt im Rahmen dieses Praktikums ist, dass das Internet innerhalb der Laborumgebung nur simuliert wird, es besteht also kein richtiger Zugang zum Internet. Dieser Fakt stellt sicher, dass der Versuchsaufbau bei falscher Konfiguration, von außen beschädigt werden könnte. Zudem wird somit sichergestellt, dass bei der Konfiguration der virtuellen Maschinen nur die Versionen der zu Grunde liegenden Images verwendet werden können. 
+
+\end{quotation}
+
+Nachdem die Begriffe Intranet, DMZ und Internet im Kontext der Laborumgebung und Problemstellung definiert und eingrenzt wurden müssen noch weitere Begriffe eingeführt werden. Im folgenden Abschnitt werden die Netzwerkprotokolle oder auch Kommunikationsprotokolle eingeführt, welche im Rahmen des Praktikums verwendet werden. 
+
+\subsection{Netzwerkprotokolle/Kommunikationsprotokolle} 
+Um eine Netzwerkkommunikation verschiedener Komponenten innerhalb eines Netzwerks zu gewährleisten müssen Netzwerkprotokolle eingesetzt werden. 
+
+Im Rahmen des Laborpraktikums werden verschiedene Netzwerkprotokolle eingesetzt, diese lassen sich am besten der entsprechenden Layern im OSI-Schichtenmodell beschrieben. 
+In der nachfolgenden Tabelle werden anhand der Schichten die einzelnen Protokolle eingeordnet, anschließend werden die für dieses Praktikum relevanten Protokolle gesondert beschrieben. 
+
+\begin{table}[!h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|l|l|l|l|}
+\hline
+\textbf{\#} & \multicolumn{1}{c|}{\textbf{OSI-Schicht}} & \multicolumn{1}{c|}{\textbf{Einordnung}} & \multicolumn{1}{c|}{\textbf{Protokolle}} & \multicolumn{1}{c|}{\textbf{Kopplungselemente}} \\ \hline
+\textbf{7} & Anwendungen(Application) & \multirow{3}{*}{\begin{tabular}[c]{@{}l@{}}Anwendungs-\\ orientiert\end{tabular}} & \multirow{3}{*}{HTTP, FTP, HTTPS, SMTP, DNS, LDAP} & \multirow{4}{*}{\begin{tabular}[c]{@{}l@{}}Gateway\\ Content-Switch \\ Proxy\\ Layer-4-7-Switch\end{tabular}} \\ \cline{1-2}
+\textbf{6} & Darstellung(Presentation) &  &  &  \\ \cline{1-2}
+\textbf{5} & Sitzung(Session) &  &  &  \\ \cline{1-4}
+\textbf{4} & Transport(Transport) & \multirow{4}{*}{\begin{tabular}[c]{@{}l@{}}Transport-\\ orientiert\end{tabular}} & TCP, UDP, SCTP, SPX &  \\ \cline{1-2} \cline{4-5} 
+\textbf{3} & Vermittlung-/Paket(Network) &  & ICMP, IGMP, IP, IPsec, IPX & RouterLayer-3-Switch \\ \cline{1-2} \cline{4-5} 
+\textbf{2} & Sicherung(Data Link) &  & \multirow{2}{*}{Ethernet, Token Ring, FDDI, MAC} & BridgeLayer-2-Switch \\ \cline{1-2} \cline{5-5} 
+\textbf{1} & Bitübertragung(Physical) &  &  & \begin{tabular}[c]{@{}l@{}}Netzwerkkabel\\ Repeater\\ Hub\end{tabular} \\ \hline
+\end{tabular}%
+}
+\caption{OSI-Schichtenmodell}
+\label{OSI}
+\end{table}
+
+Bevor jedoch die Protokolle eingeführt werden können muss auf den Aufbau eines Datenpaketes geschaut werden. 
+\subsubsection{Datenpakete}
+In einem Protokoll wird der Aufbau eines Datenpakets definiert, zudem enthält es wichtige Informationen über den Datenaustausch. Es wird definiert, wer der Absender und Empfänger eines Datenpaktes sein soll. 
+Von welchem Typ ein Datenpaket ist, ob es für den Verbindungsaufbau, Verbindungsabbau oder für Nutzdaten genutzt wird. Von größe des Datenpaket, welches beim Empfänger ankommen soll. 
+Wenn es eine mehrteilige Kommunikations ist, muss auch zusätzlich noch die laufende Nummer und die Anzahl der Pakte genau definiert werden. Zuletzt folgt noch eine Prüfsumme, mit Hilfe dieser kann der Empfänger prüfen, ob die Datenpakete auch fehlerfrei angekommen sind. 
+
+Alle der Beschriebenen Informationen werden dem "Header" eines Datenpaktes vorne oder hinten angehängt.
+
+
+ 
 
 \subsection{Debian GNU Linux 7.11}
 \subsection{IP-Tables}\label{iptables}
