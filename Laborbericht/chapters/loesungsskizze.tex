@@ -1,5 +1,5 @@
 % !TEX encoding = UTF-8 Unicode
-\section{Lösungsskizze}
+\section{Lösungsskizze}\label{loesungsskizze}
 In diesem Kapitel wird sich mit dem Thema befasst, wie sich eine Side-to-Side VPN Verbindung, die die Firmen A und B wie in Kapitel \ref{laborumgebung} beschrieben verbindet.
 Dazu waren zu Beginn mehrere Vorüberlegungen zu tätigen. Dies sind zum einen, wie wird das innere Netz der Firmen A und B geschützt, dann welcher VPN Dienst kann für diesen Zweck verwendet werden und welche weiteren Strategien braucht es bei der Umsetzung der Security Policies der Firmen. 
 \subsection{Firewall}\label{firewallloesung}
@@ -54,7 +54,7 @@ Dabei sagt das -A an welche Chain diese Regel angehängt werden soll. Das -i ist
 Die in Auflistung \ref{lst:allgemeineRegeln} dargestellten Regeln sind allgemeine Regeln für die Firewall, diese erlauben das empfangen von Pinganfragen, den Fernzugriff mittels SSH, alle neuen Verbindungen von innen nach außen und alle bereits aufgebauten Verbindungen beziehungsweiße alle Verbindungen die einen Bezug auf eine andere Verbindung besitzen. In der nachfolgenden Tabelle \ref*{tab:iptablesOptionen} werden die hier verwendeten Optionen nochmals näher beschrieben.
 \begin{table}[h]
 	\centering
-\begin{tabular}{|p{2cm}|p{14cm}|}
+\begin{tabular}{|p{2cm}|p{13cm}|}
 	\hline 
 	Optionen & Beschreibung \\ 
 	\hline 
@@ -72,9 +72,10 @@ Die in Auflistung \ref{lst:allgemeineRegeln} dargestellten Regeln sind allgemein
 \caption{IPTABLES Optionen und Beschreibung} \label{tab:iptablesOptionen}
 \end{table}
 Nach den allgemeine Regeln müssen nun die VPN spezifischen Regeln definiert werden. Dazu muss man die auf den VPN Ports eintreffenden und ausgehenden Pakete betrachten. Diese Ports sind entweder 1194 oder 1195. In der Auflistung \ref{lst:VPNRegeln} sind VPN Regeln zusehen. Eine Besonderheit bei VPN ist das zum einen alle verbinungen die über das Netzwerkinterface tun0 eintreffenden Pakete ohne Überprüfung an das Inteface eth0 übergeben werden. Des weiteren wird noch die Tabelle NAT benötigt, was das ''*nat'' angibt. In dieser Tabelle gibt es die Chain POSTROUTING, über diese kann nachträglich der Verkehrsheader eines Paketes verändert werden. MASQUERADE hat dabei die Funktion das wenn ein Paket versendet wird die Source-IP-Adresse so verändert wird das nur noch die IP-Adresse des Firewallservers ersichtlich ist. Dies hat den Grund das von außen nicht ersichtlich wird, was sich für IP-Adressen hinter der Firewall befinden und es so Angreifern erschwert wird diese anzugreifen.
+\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
-	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+	xleftmargin=.01\textwidth, xrightmargin=.01\textwidth
 }
 \begin{lstlisting}[caption={Weitere VPN Firewallregeln},label=lst:VPNRegeln]
 # Erlaube alle Verbindungen auf den VPN Ports
