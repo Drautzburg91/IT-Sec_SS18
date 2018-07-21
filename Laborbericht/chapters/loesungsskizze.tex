@@ -142,11 +142,57 @@ Nach dem die Firewall auf den Servern der Firma A und B eingerichtet wurde, muss
 Dafür muss zu Beginn auf beiden Servern das in Kapitel \ref{openvpn} vorgestellte Tool OpenVPN installiert werden. Dies geschieht wie schon im Kapitel \ref{firewallloesung}  erwähnt mit dem Tool ''aptitute''. Nach der Installation müssen wie nachfolgend erklärt für den Server der Firma A und B ein Serverzertifikat erstellt werden.
 
 \subsubsection{Serverzertifikate}
+Wie schon in Kapitel \ref{PKI} erklärt wird für die  Einrichtung eines VPN's Zertifikate benötigt. Diese werden verwendet um eine Verbindungsverschlüsselung zu realisieren. In diesem Kapitelteil wird anhand der Firma A erklärt, wie ein solches Zertifikat in der Laborumgebung erstellt wird, um ein Zertifikat für Firma B zu erstellen, ist der gleiche Prozess notwendig. \newline
+Für das Erstellen eines Zertifikates ist das Tool OpenSSL notwendig. Über OpenSSL wird ein öffentlicher und privater Schlüssel erzeugt. Nach dem diese erstellt wurden, muss von der Zertifizierungsstelle die Konfigurationsdatei geladen werden. Mit Hilfe dieser Konfigurationsdatei des privaten Schlüssels und des Tools OpenSSL wird nun eine CSR (Certificate Signing Request) Datei erzeugt. Nach dem diese Datei erzeugt wurde, muss diese zur Zertifizierungsstelle hochgeladen werden. Nach dem Upload der Datei (Zertifikat), muss diese nun Signiert werden. Dies wir im Labor mit einem Shellskript realisiert. Nach dem Signieren kann nun das fertige Zertifikat geladen und auf dem Server 
+abgelegt werden. In der Auflistung \ref{lst:openssl}  werden die einzelnen Befehle zur Erstellung der Schlüssel und der CSR Datei gezeigt und die einzelnen Befehle in der Tabelle \ref{tab:openSSLOptionen} näher beschrieben.\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Erzeugen eines privaten Schlüssels mit OpenSSL},label=lst:openssl]
+#Privaten Schluessel erzeugen
+openssl genrsa -out firma-A.key 2048
 
-
+#Request erstellen - CSR-Datei
+openssl req -new -key firma-A.key -config req.cnf -reqexts v3_req_srv -out CSR-firma-A.csr
+\end{lstlisting}
+\vspace{\baselineskip}
+\begin{table}[h]
+	\centering
+\begin{tabular}{|l|l|}
+	\hline 
+	Befehle & Beschreibung \\ 
+	\hline 
+	openssl & Tool zur Erstellung von privaten Schlüsseln \\ 
+	\hline 
+	genrsa & Befehl zum erstellen des Schlüssels mittels RSA \\ 
+	\hline 
+	-out & Ausgabe des Schlüssels in angegebene Datei \\ 
+	\hline 
+	firma-A.key & Name der Schlüsseldatei \\ 
+	\hline 
+	2048 & Schlüssellänge in Bits \\ 
+	\hline 
+	req -new & Erzeugen eines neuen Requests \\ 
+	\hline 
+	-config & laden der Konfigurationsdatei req.cnf \\ 
+	\hline 
+	-reqexts & Erweiterung des X.509 Formates \\ 
+	\hline 
+\end{tabular} 
+\caption{Befehle zur Erstellung eines Privaten Schlüssels mittels OpenSSL} \label{tab:openSSLOptionen}
+\end{table}
 
 \subsubsection{Server Firma A}
-
+Nach dem die Zertifikate wie im vorherigen Kapitel erstellt wurden, kann nun mit dem Konfigurieren des VPN-Servers begonnen werden. Dazu wird zuerst mittels des Root-Users das Verzeichnis ''/etc/opnevpn'' erstellt. Nach dem dieses erstellt wurde werden zwei Unterverzeichnisse ''/etc/openvpn/certs'' und ''/etc/openvpn/keys'' angelegt. In das Unterverzeichnis ''certs'' werden das Serverzertifikat ''fw2-firma-A.crt'' und die Zertifikatschain (von der Zertifizierungstelle) kopiert. In das Unterverzeichnis ''keys'' wird der private Schlüssel verschoben. Da der private Schlüssel geheimgehalten werden soll, muss die Berechtigung für das Unterverzeichnis noch geändert werden. Dies wird mit dem Befehl ''chmod -R 600 /etc/openvpn/keys/'' bewerkstelligt. Der nächste Schritt ist das erstellen des Diffie-Hellman Schlüssels. Dieser Schlüssel wird später benötigt um später die Verbindung symmetrisch zu verschlüsseln. Der dafür notwendige Befehl wird in der Auflistung \ref{lst:DH} gezeigt.\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Erzeugen des Diffie-Hellman Schlüssels},label=lst:DH]
+openssl dhparam -out dh2048.pem 2048
+\end{lstlisting}
+\vspace{\baselineskip}
 
 
 
