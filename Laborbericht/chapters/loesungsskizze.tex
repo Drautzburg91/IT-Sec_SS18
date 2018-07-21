@@ -193,6 +193,93 @@ Nach dem die Zertifikate wie im vorherigen Kapitel erstellt wurden, kann nun mit
 openssl dhparam -out dh2048.pem 2048
 \end{lstlisting}
 \vspace{\baselineskip}
+Eine besondere Eigenschaft des Site-to-Site VPN's ist das man für jeden einzelnen Clienten eine besondere Konfiguration ''pushen'' kann. Dies bringt den Vorteil, dass wie hier verwendet, ein Client die Infrastruktur hinter der Firewall so verwenden kann, als wäre sie ein Teil seiner eigenen Infrastruktur. Dazu muss ein weiteres Unterverzeichnis mit dem Namen ''client\_configs" erstellt werden. Darin muss eine Datei angelegt werden, dass den gleichen Namen trägt wie das Clientzertifikat. In dieser Datei werden die Konfigurationsdaten für den Clienten geschrieben, wie in Auflistung \ref{lst:clientconf} zusehen ist.\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Clientkonfigurationsdatei fw-firma-b},label=lst:clientconf]
+iroute 192.168.70.0 255.255.255.0
+iroute 192.168.80.0 255.255.255.0
+\end{lstlisting}
+\vspace{\baselineskip}
+Das ''iroute'' Statement gibt dem Client an welche IP-Adressen von ihm angesprochen werden können. \newline Nun muss als letztes die OpenVPN Konfigurationsdatei erstellt und angepasst werden. Dazu können die bei der Installation von OpenVPN mitgelieferten Beispieldateien verwendet werden und nach und nach an den Verwendungszweck angepasst werden. Für die Konfiguration für den Server wird die ''server.conf'' benötigt.\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Server.conf Datei der Firma A},label=lst:serverconf]
+script-security 3
+
+port 1194
+
+proto udp
+
+dev tun
+
+tls-server
+auth SHA1
+
+ca /etc/openvpn/cert/f223CA.chain.crt
+cert /etc/openvpn/cert/fw-firma-a.crt
+key /etc/openvpn/keys/firma-A.key  # This file should be kept secret
+
+dh /etc/openvpn/dh2048.pem
+
+server 192.168.100.0 255.255.255.0
+
+ifconfig-pool-persist ipp.txt
+
+route 192.168.70.0 255.255.255.0
+route 192.168.80.0 255.255.255.0
+push "route 192.168.30.0 255.255.255.0"
+push "route 192.168.40.0 255.255.255.0"
+
+client-config-dir /etc/openvpn/client_configs
+
+keepalive 10 120
+
+cipher aes-256-cbc
+
+comp-lzo
+
+user nobody	
+group nogroup
+
+persist-key
+persist-tun
+
+verb 3
+
+\end{lstlisting}
+\vspace{\baselineskip}
+Die Auflistung \ref{lst:serverconf} zeigt die ''server.conf'' der Firma A. Dabei wird von oben nach unten die folgenden Konfigurationsbefehle abgearbeitet.
+\begin{description}
+	\item[script-security 3]
+	Beschreibt die Skript Sicherheit, das heißt hier wird definiert wie OpenVPN externe Programme und Skripte verwenden darf. Die drei  erlaubt die Übergabe von Passwörtern an Skripte über Umgebungsvariablen.
+	\item[port 1194] Definiert den Port über den der VPN Verkehr abläuft. Alternativport 1195
+	\item[proto udp] Definiert über welches Protokoll kommuniziert wird. 
+	\item[dev tun] Erzeugt einen gerouteten IP-Tunnel.
+	\item[tls-server auth SHA1] Authentifikationskonfiguration
+	\item[ca] Pfadangabe zur Zertifkatschain
+	\item[cert] Pfadangabe zum Serverzertifikat 
+	\item[key] Pfadangabe zum Privaten Schlüssel
+	\item[dh] Pfadangabe zum Diffi-Hellman Key 
+	\item[server] Spezifiziert den Server als Server und gibt den IP-Adress Raum des VPN Netzes an.	
+	\item[ifconfig-pool-persist] Datei in dem IP-Adressen der Clients gespeichert werden, um beim nächsten Verbinden von dem selben Client diesem die gleiche IP-Adresse zu geben. 
+	\item[route] Definiert die hinter dem Client liegenden IP-Adressen auf die von Serverseite aus zugegriffen werden kann.
+	\item[push] IP-Adressraum der an den Client ''gepusht'' werden, die der Client annehmen darf. 
+	\item[client-config-dir] Pfadangabe zur Clientkonfiguration
+	\item[keepalive] Gibt an das nach 10 Sekunden inaktivität ein Ping an den Client gesendet wird, nach 120 Sekunden Inaktivität wird ein weiterer Versuch unternommen sich mit dem Client zu verbinden.
+	\item[cipher] Kryptographische Chiffre, über die die Verbindung zwischen Client und Server verschlüsselt wird. Dies muss beim Client der gleiche Chiffre sein.
+	\item[comp-lzo] Aktiviert die Kompression der Verbindung, dies muss auch beim Client aktiviert sein.
+	\item[user] Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nobody gesetzt, da zum starten eines VPN's Rootrechte benötigt und dies aber während der Sitzung nicht gewollt ist.
+	\item[group]Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nogroup gesetzt, da zum starten eines VPN's Rootrechte benötigt und dies aber während der Sitzung nicht gewollt ist.
+	\item[persist-key] Sichert vor einem Keepalive Neustart die Schlüssel, um diese nicht nochmals erzeugen zu müssen.
+	\item[persist-tun] Ähnlich wie persist-key nur für das tun-interface.  
+	\item[verb 3] Logging Optionen, über diese Einstellung kann die Genauigkeit des Loggens eingestellt werden.
+\end{description}
+
 
 
 
