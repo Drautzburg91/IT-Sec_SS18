@@ -2,7 +2,7 @@
 \section{Lösungsskizze}
 In diesem Kapitel wird sich mit dem Thema befasst, wie sich eine Side-to-Side VPN Verbindung, die die Firmen A und B wie in Kapitel \ref{laborumgebung} beschrieben verbindet.
 Dazu waren zu Beginn mehrere Vorüberlegungen zu tätigen. Dies sind zum einen, wie wird das innere Netz der Firmen A und B geschützt, dann welcher VPN Dienst kann für diesen Zweck verwendet werden und welche weiteren Strategien braucht es bei der Umsetzung der Security Policies der Firmen. 
-\subsection{Firewall}
+\subsection{Firewall}\label{firewallloesung}
 Wenn eine Firewall aufgebaut werden soll, muss sich zu beginn überlegt werden, welche allgemeine Strategie mit der Firewall gefahren werden soll. Das heißt sollen alle Verbindungen Standardmäßig freigegeben werden und nur explizit nicht erlaubt Verbindungen geblockt werden (Default-Allow-Strategy), oder sollen alle Verbindungen blockiert werden und nur die die explizit erlaubt wurden, geöffnet werden (Default-Deny-Strategy). Im Standardfall wird in Unternehmen, die Strategie Default-Deny verwendet, weshalb auch im Versuchsaufbau diese Strategie gewählt wurde. Eine Firewall wird mit Hilfe des Userspace-Programmes IPTABLES (siehe Kapitel \ref{iptables}) unter Linux realisiert. Dafür wird eine Rules Datei (nachfolgend Skript genannt) angelegt, in dieser werden die Einstellungen und Regeln für die Firewall definiert. Zu Beginn des Skriptes wird der Interpreter für den Code angegeben. Dann wird begonnen die durch die Default Strategie vorgegebenen Default Policies umzusetzen (siehe Auflistung \ref{lst:defaultPolicy}). Dabei sagt das -P, dass die Policy angesprochen werden soll, das INPUT, OUTPUT und FORWARD bezieht sich auf die im Kapitel \ref{iptables} vorgestellten Chains. DROP sagt dabei aus, dass die eintreffenden Pakete, wenn keine weiteren Regeln definiert oder zutreffen nicht weitergeleitet und ``fallengelassen'' werden sollen.
 \newline
 \lstset{
@@ -138,7 +138,12 @@ Wurden all diese Einstellungen vorgenommen, kann begonnen werden mit der Konfigu
 
 
 \subsection{VPN}
-Na dem die Firewall auf den Servern der Firma A und B eingerichtet wurde, muss nun die VPN Verbindung erstellt werden. Dazu dient der Firewallserver der Firma A als Server und der Firewallserver der Firma B als Client. Diese Einrichtung wird in diesem Kapitel näher beschrieben.
+Nach dem die Firewall auf den Servern der Firma A und B eingerichtet wurde, muss nun die VPN Verbindung erstellt werden. Dazu dient der Firewallserver der Firma A als Server und der Firewallserver der Firma B als Client. Diese Einrichtung wird in diesem Kapitel näher beschrieben. \newline
+Dafür muss zu Beginn auf beiden Servern das in Kapitel \ref{openvpn} vorgestellte Tool OpenVPN installiert werden. Dies geschieht wie schon im Kapitel \ref{firewallloesung}  erwähnt mit dem Tool ''aptitute''. Nach der Installation müssen wie nachfolgend erklärt für den Server der Firma A und B ein Serverzertifikat erstellt werden.
+
+\subsubsection{Serverzertifikate}
+
+
 
 \subsubsection{Server Firma A}
 
