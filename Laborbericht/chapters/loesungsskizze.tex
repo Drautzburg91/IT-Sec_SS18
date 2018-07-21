@@ -2,7 +2,7 @@
 \section{Lösungsskizze}
 In diesem Kapitel wird sich mit dem Thema befasst, wie sich eine Side-to-Side VPN Verbindung, die die Firmen A und B wie in Kapitel \ref{laborumgebung} beschrieben verbindet.
 Dazu waren zu Beginn mehrere Vorüberlegungen zu tätigen. Dies sind zum einen, wie wird das innere Netz der Firmen A und B geschützt, dann welcher VPN Dienst kann für diesen Zweck verwendet werden und welche weiteren Strategien braucht es bei der Umsetzung der Security Policies der Firmen. 
-\subsection{Firewall}
+\subsection{Firewall}\label{firewallloesung}
 Wenn eine Firewall aufgebaut werden soll, muss sich zu beginn überlegt werden, welche allgemeine Strategie mit der Firewall gefahren werden soll. Das heißt sollen alle Verbindungen Standardmäßig freigegeben werden und nur explizit nicht erlaubt Verbindungen geblockt werden (Default-Allow-Strategy), oder sollen alle Verbindungen blockiert werden und nur die die explizit erlaubt wurden, geöffnet werden (Default-Deny-Strategy). Im Standardfall wird in Unternehmen, die Strategie Default-Deny verwendet, weshalb auch im Versuchsaufbau diese Strategie gewählt wurde. Eine Firewall wird mit Hilfe des Userspace-Programmes IPTABLES (siehe Kapitel \ref{iptables}) unter Linux realisiert. Dafür wird eine Rules Datei (nachfolgend Skript genannt) angelegt, in dieser werden die Einstellungen und Regeln für die Firewall definiert. Zu Beginn des Skriptes wird der Interpreter für den Code angegeben. Dann wird begonnen die durch die Default Strategie vorgegebenen Default Policies umzusetzen (siehe Auflistung \ref{lst:defaultPolicy}). Dabei sagt das -P, dass die Policy angesprochen werden soll, das INPUT, OUTPUT und FORWARD bezieht sich auf die im Kapitel \ref{iptables} vorgestellten Chains. DROP sagt dabei aus, dass die eintreffenden Pakete, wenn keine weiteren Regeln definiert oder zutreffen nicht weitergeleitet und ``fallengelassen'' werden sollen.
 \newline
 \lstset{
@@ -100,9 +100,56 @@ COMMIT
 -A POSTROUTING -o eth1 -j MASQUERADE
 COMMIT
 \end{lstlisting}
+\vspace{\baselineskip}
+Nach dem erstellen des Skriptes, muss dieses nun eingespielt werden. Dazu wird der Befehl ''iptables-restore'' verwendet. Dieser wird exemplarisch in der Auflistung \ref{lst:fwrestorea} veranschaulicht, dabei liegt das Skript im Ordner ''etc''.
+\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Einspielen des Firewallskriptes der Firma a},label=lst:fwrestorea]
+iptable-restore < etc/iptables.firewall-a.rules
+\end{lstlisting}
+\vspace{\baselineskip}
+Nach dem das Skript eingespielt wurde, muss dieses noch so konfiguriert werden, dass es nach einem Serverneustart automatisch neu eingespielt wird. Dazu könne zwei Arten verwendet werden. Zum einen mit Hilfe des ''if-pre-up.d'' Directories. Dabei wird eine neue Datei angelegt mit dem Namen ''iptables'' angelegt. In der Auflistung \ref{lst:neustart} wird der Inhalt, der neu angelegten Datei gezeigt. Nun muss die Datei noch Ausführbar gemacht werden, dies geschieht mit Hilfe des Befehls ''chmod +x''
+\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Automatisches Laden des Iptablesskriptes bei Serverneustart},label=lst:neustart]
+#!/bin/bash
+/sbin/iptasbles-restore < /etc/iptables.fwirewall-a.rules
+\end{lstlisting}
+\vspace{\baselineskip}
+Die zweite Möglichkeit des automatischen Neuladens der Firewall ist mit Hilfe des Tools ''iptables-peristent''. Dieses Tool muss mit ''aptitute'' installiert werden. Nach dem das Tool installiert wurde, können mit dem Befehl ''iptables-save > /etc/iptables/rules.v4'' die Regeln für jeden Neustart automatisch geladen werden. 
+\newline 
+Eine weitere Konfiguration die vorgenommen werden muss, ist das Akzeptieren des Forwardings. Dazu muss im Verzeichnis ''/proc'' die Datei ''/proc/sys/net/ipv4/ip\_forward'' die Zeile in der Auflistung \ref{lst:forward} eingefügt werden. Zu Beginn steht in dieser Datei lediglich eine ''0'' diese muss ersetzt werden durch eine ''1'' dies aktiviert das Forwarding.\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Forwarding aktivieren},label=lst:forward]
+/bin/echo "1" > /proc/sys/net/ipv4/ip_forward
+\end{lstlisting}
+\vspace{\baselineskip}
+Wurden all diese Einstellungen vorgenommen, kann begonnen werden mit der Konfiguration der Site-toSite VPN Verbindung, was im nachfolgenden Kapitel beschrieben wird.
+
+
 
 \subsection{VPN}
+Nach dem die Firewall auf den Servern der Firma A und B eingerichtet wurde, muss nun die VPN Verbindung erstellt werden. Dazu dient der Firewallserver der Firma A als Server und der Firewallserver der Firma B als Client. Diese Einrichtung wird in diesem Kapitel näher beschrieben. \newline
+Dafür muss zu Beginn auf beiden Servern das in Kapitel \ref{openvpn} vorgestellte Tool OpenVPN installiert werden. Dies geschieht wie schon im Kapitel \ref{firewallloesung}  erwähnt mit dem Tool ''aptitute''. Nach der Installation müssen wie nachfolgend erklärt für den Server der Firma A und B ein Serverzertifikat erstellt werden.
+
+\subsubsection{Serverzertifikate}
+
+
+
 \subsubsection{Server Firma A}
+
+
+
+
 \subsubsection{Client Firma B}
 
 
