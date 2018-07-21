@@ -208,7 +208,7 @@ Das ''iroute'' Statement gibt dem Client an welche IP-Adressen von ihm angesproc
 	basicstyle=\footnotesize, frame=tb,
 	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
 }
-\begin{lstlisting}[caption={Server.conf Datei der Firma A},label=lst:serverconf]
+\begin{lstlisting}[caption={server.conf Datei der Firma A},label=lst:serverconf]
 script-security 3
 
 port 1194
@@ -222,7 +222,8 @@ auth SHA1
 
 ca /etc/openvpn/cert/f223CA.chain.crt
 cert /etc/openvpn/cert/fw-firma-a.crt
-key /etc/openvpn/keys/firma-A.key  # This file should be kept secret
+# This file should be kept secret
+key /etc/openvpn/keys/firma-A.key  
 
 dh /etc/openvpn/dh2048.pem
 
@@ -273,18 +274,56 @@ Die Auflistung \ref{lst:serverconf} zeigt die ''server.conf'' der Firma A. Dabei
 	\item[keepalive] Gibt an das nach 10 Sekunden inaktivität ein Ping an den Client gesendet wird, nach 120 Sekunden Inaktivität wird ein weiterer Versuch unternommen sich mit dem Client zu verbinden.
 	\item[cipher] Kryptographische Chiffre, über die die Verbindung zwischen Client und Server verschlüsselt wird. Dies muss beim Client der gleiche Chiffre sein.
 	\item[comp-lzo] Aktiviert die Kompression der Verbindung, dies muss auch beim Client aktiviert sein.
-	\item[user] Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nobody gesetzt, da zum starten eines VPN's Rootrechte benötigt und dies aber während der Sitzung nicht gewollt ist.
-	\item[group]Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nogroup gesetzt, da zum starten eines VPN's Rootrechte benötigt und dies aber während der Sitzung nicht gewollt ist.
+	\item[user] Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nobody gesetzt, da zum starten eines VPN's Rootrechte benötigt und dies ist aber während der Sitzung nicht gewollt ist.
+	\item[group]Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nogroup gesetzt, da zum starten eines VPN's Rootrechte benötigt und dies ist aber während der Sitzung nicht gewollt ist.
 	\item[persist-key] Sichert vor einem Keepalive Neustart die Schlüssel, um diese nicht nochmals erzeugen zu müssen.
 	\item[persist-tun] Ähnlich wie persist-key nur für das tun-interface.  
 	\item[verb 3] Logging Optionen, über diese Einstellung kann die Genauigkeit des Loggens eingestellt werden.
 \end{description}
 
-
-
-
 \subsubsection{Client Firma B}
+Ähnlich wie beim Server der Firma A, wie im Kapitel-teil zuvor, wird der Client der Firma B eingerichtet. Allerdings wird hier die ''client.conf'' benötigt und es wird kein ''client\_conf'' Verzeichnis benötigt. Nachfolgend wird in der Auflistung  die Konfigurationsdatei gezeigt und die einzelnen Begriffe nochmals erklärt.\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={client.conf Datei der Firma B},label=lst:clientconf]
+port 1194
 
+client
+
+dev tun
+
+proto udp
+
+remote 10.1.0.131 1194
+
+user nobody
+group nogroup
+
+persist-key
+persist-tun
+
+ca /etc/openvpn/f223CA.chain.crt
+cert /etc/openvpn/fw2.firma-b.f223.crt
+key /etc/openvpn/vpnb.key
+
+pull
+auth SHA1
+
+cipher aes-256-cbc
+
+comp-lzo
+
+verb 3
+\end{lstlisting}
+\vspace{\baselineskip}
+\begin{description}
+	\item[client] Spezifiziert den Client als Client
+	\item[remote] Gibt die IP-Adresse und den Port des VPN-Servers an, mit dem sich der Client verbinden soll.
+	\item[tls-client] Spezifiziert den Client als tls-Client
+	\item[pull] holt sich über diesen Befehl die von Server ''gepushten'' Konfigurationen
+\end{description}
 
 
 
