@@ -56,7 +56,6 @@ titlepage,   %% only the titlepage (using titlepage-environment) appears on the 
 
 %%% listings: include programming code
 \usepackage{listings}
-\renewcommand{\lstlistingname}{Auflistung}
 
 %%% units: technical units
 \usepackage{units}
@@ -310,7 +309,7 @@ Technisch gesehen wird jeder dieser Server auf Grundlage einer virtuellen Maschi
 Jede dieser Maschinen hat Linux als Betriebssystem installiert und vorkonfiguriert, jedoch ohne zusätzliche Pakte, nur die reine Grundinstallation   
 Da die Implementierung und Installation aller dieser Dienste und der damit verbundenen Komponenten den Rahmen dieses Praktikums sprengen würde, werden die Aufgabenstellungen zuvor runter gebrochen. Die detaillierte Aufgabenstellung wird im nächsten Abschnitt eingeführt.
 
-\subsection{Aufgabenstellung}
+\subsection{Aufgabenstellung}\label{kap:Aufgabenstellung}
 Wie schon im vorhergehenden Abschnitt beschrieben, gibt es mehrere Dienste, welche in der IT-Landschaft angeboten werden sollen. 
 In diesem Bericht, wird die Virtuelle Kopplung der Unternehmen „A“ und „B“ durch eine „Site-to-Site-“ oder auch „LAN-to-LAN-“ genannt -Verbindung implementiert. 
 Die Problemstellung gilt als gelöst, wenn es möglich ist, dass Unternehmen A eine gesicherte Verbindung zu Unternehmen B aufbauen kann und die jeweiligen internen Firewalls entsprechend konfiguriert sind. Die Konfiguration der externen Firewalls kann in dieser Aufgabe vernachlässigt werden, hierfür sollen die bereitgestellten internen Firewalls verwendet werden. 
@@ -360,7 +359,7 @@ In der nachfolgenden Tabelle werden anhand der Schichten die einzelnen Protokoll
 \textbf{5} & Sitzung(Session) &  &  &  \\ \cline{1-4}
 \textbf{4} & Transport(Transport) & \multirow{4}{*}{\begin{tabular}[c]{@{}l@{}}Transport-\\ orientiert\end{tabular}} & TCP, UDP, SCTP, SPX &  \\ \cline{1-2} \cline{4-5} 
 \textbf{3} & Vermittlung-/Paket(Network) &  & ICMP, IGMP, IP, IPsec, IPX & RouterLayer-3-Switch \\ \cline{1-2} \cline{4-5} 
-\textbf{2} & Sicherung(Data Link) &  & \multirow{2}{*}{Ethernet, Token Ring, FDDI, MAC} & BridgeLayer-2-Switch \\ \cline{1-2} \cline{5-5} 
+\textbf{2} & Sicherung(Data Link) &  & \multirow{2}{*}{Ethernet, Token Ring, FDDI} & BridgeLayer-2-Switch \\ \cline{1-2} \cline{5-5} 
 \textbf{1} & Bitübertragung(Physical) &  &  & \begin{tabular}[c]{@{}l@{}}Netzwerkkabel\\ Repeater\\ Hub\end{tabular} \\ \hline
 \end{tabular}%
 }
@@ -368,20 +367,38 @@ In der nachfolgenden Tabelle werden anhand der Schichten die einzelnen Protokoll
 \label{OSI}
 \end{table}
 
-Bevor jedoch die Protokolle eingeführt werden können muss auf den Aufbau eines Datenpaketes geschaut werden. 
-\subsubsection{Datenpakete}
-In einem Protokoll wird der Aufbau eines Datenpakets definiert, zudem enthält es wichtige Informationen über den Datenaustausch. Es wird definiert, wer der Absender und Empfänger eines Datenpaktes sein soll. 
-Von welchem Typ ein Datenpaket ist, ob es für den Verbindungsaufbau, Verbindungsabbau oder für Nutzdaten genutzt wird. Von größe des Datenpaket, welches beim Empfänger ankommen soll. 
-Wenn es eine mehrteilige Kommunikations ist, muss auch zusätzlich noch die laufende Nummer und die Anzahl der Pakte genau definiert werden. Zuletzt folgt noch eine Prüfsumme, mit Hilfe dieser kann der Empfänger prüfen, ob die Datenpakete auch fehlerfrei angekommen sind. 
+Die bereits beschriebene Aufgabenstellung (vgl. \ref{kap:Aufgabenstellung} \nameref{kap:Aufgabenstellung}) soll eine site-to-site VPN eingerichtet werden. Da es um eine die Verbindung geht, kann der Fokus auf die Transport-orientierten Schichten der OSI-Modells 1-4 gerichtet werden. Für die Umsetzung einer VPN-Verbindung und Konfiguration der internen Firewalls sind die folgenden Protokolle vordergründig
+\begin{quotation}
+\item ["ICMP"] Das Internet Control Message Protocol, wird dazu verwendet in Rechnernetzen einen Austausch von Fehlermeldungen durchzuführen. 
+\item ["IP"] Das Internet Protocol ist ein zustands- und verbindungsloses Protokoll, welches die Implementierung der Vermittlungsschicht (3) widerspiegelt. 
+\item ["IPsec"] Das Internet Protocol Security ist eine Erweiterung des IP-Protokolls und soll eine gesicherte Kommunikation über unsichere IP-Netze ermöglichen.  
+\item ["TCP"] Das Transmission Control Protocol wird von allen modernen Betriebssystemen genutzt um, zu definieren, wie die Daten zwischen verschiedenen Netzwerkkomponenten ausgetauscht werden sollen 
+\item ["UDP"] Das User Datagram Protocol zeichnet sich dadurch aus, dass es verbindungslos und ungeschützt ist. Es kann also nicht gesichert werden, ob ein gesendetes Datenpaket richtig (nicht verfälscht von Dritten) oder überhaupt  ankommt. \cite{Kurose2008Computernetzwerke}
+\end{quotation}
+Diese beschriebenen Protokolle sind der Lösung der Aufgabe von großer Bedeutung. Sie werden bei der Erstellung der Lösungsskizze wieder aufgegriffen. Um die Beschreibung Netzwerkprotokolle zu komplettieren muss noch auf eine Ebene tiefer geschaut werden, auf die Datenpakte. Im nächsten Abschnitt wird der Aufbau und die wichtigsten Eigenschaften eines Datenpakets beschrieben. 
 
-Alle der Beschriebenen Informationen werden dem "Header" eines Datenpaktes vorne oder hinten angehängt.
-
-
+\subsubsection{Aufbau eins Datenpakets}
+Im vorhergehenden Abschnitt wurden die wichtigsten Netzwerkprotokolle für den Rahmen des Laborpraktikums beschrieben. In diesem Abschnitt, wird das Zusammenspiel eines Netzwerksprotokoll und Datenpaketen gezeigt. 
  
+In einem Protokoll wird der Aufbau eines Datenpakets definiert, zudem enthält es wichtige Informationen über den Datenaustausch. 
+Es definiert, 
+\begin{itemize}
+\item wer der Absender und Empfänger eines Datenpaktes sein soll,
+\item von welchem Typ ein Datenpaket ist, ob es für den Verbindungsaufbau, Verbindungsabbau oder für Nutzdaten genutzt wird, 
+\item die Größe des Datenpaket, welches beim Empfänger ankommen soll. 
+\end{itemize}
+Wenn es sich um eine mehrteilige Kommunikation handelt, muss zusätzlich noch die laufende Nummer und die Anzahl der Pakte definiert werden. Zuletzt folgt noch eine Prüfsumme, mit dessen Hilfe der Empfänger prüfen kann, ob die Datenpakete fehlerfrei angekommen sind. 
+Alle dieser beschriebenen Informationen werden dem "Header" eines Datenpaktes vorne oder hinten angehängt, dieser angehängte Bereich wird auch "Trailer genannt". Anhand der folgenden Abbildung \ref{fig:datenpaket} wird der Aufbau eines Datenpakts und der einzelnen Bestandteile noch verdeutlicht. 
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{pictures/datenpaket.png}
+	\caption{Aufbau eines Datenpakets \cite{Header-Dat}}
+	\label{fig:datenpaket}
+\end{figure}
 
 \subsection{Debian GNU Linux 7.11}
 \subsection{IP-Tables}\label{iptables}
 \subsection{OpenVPN}
+\subsection{Public Key Intrastructure}
 \include{chapters/loesungsskizze}
 \include{chapters/Auswertung}
 \section{Fazit}
