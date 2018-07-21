@@ -100,9 +100,51 @@ COMMIT
 -A POSTROUTING -o eth1 -j MASQUERADE
 COMMIT
 \end{lstlisting}
+\vspace{\baselineskip}
+Nach dem erstellen des Skriptes, muss dieses nun eingespielt werden. Dazu wird der Befehl ''iptables-restore'' verwendet. Dieser wird exemplarisch in der Auflistung \ref{lst:fwrestorea} veranschaulicht, dabei liegt das Skript im Ordner ''etc''.
+\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Einspielen des Firewallskriptes der Firma a},label=lst:fwrestorea]
+iptable-restore < etc/iptables.firewall-a.rules
+\end{lstlisting}
+\vspace{\baselineskip}
+Nach dem das Skript eingespielt wurde, muss dieses noch so konfiguriert werden, dass es nach einem Serverneustart automatisch neu eingespielt wird. Dazu könne zwei Arten verwendet werden. Zum einen mit Hilfe des ''if-pre-up.d'' Directories. Dabei wird eine neue Datei angelegt mit dem Namen ''iptables'' angelegt. In der Auflistung \ref{lst:neustart} wird der Inhalt, der neu angelegten Datei gezeigt. Nun muss die Datei noch Ausführbar gemacht werden, dies geschieht mit Hilfe des Befehls ''chmod +x''
+\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Automatisches Laden des Iptablesskriptes bei Serverneustart},label=lst:neustart]
+#!/bin/bash
+/sbin/iptasbles-restore < /etc/iptables.fwirewall-a.rules
+\end{lstlisting}
+\vspace{\baselineskip}
+Die zweite Möglichkeit des automatischen Neuladens der Firewall ist mit Hilfe des Tools ''iptables-peristent''. Dieses Tool muss mit ''aptitute'' installiert werden. Nach dem das Tool installiert wurde, können mit dem Befehl ''iptables-save > /etc/iptables/rules.v4'' die Regeln für jeden Neustart automatisch geladen werden. 
+\newline 
+Eine weitere Konfiguration die vorgenommen werden muss, ist das Akzeptieren des Forwardings. Dazu muss im Verzeichnis ''/proc'' die Datei ''/proc/sys/net/ipv4/ip\_forward'' die Zeile in der Auflistung \ref{lst:forward} eingefügt werden. Zu Beginn steht in dieser Datei lediglich eine ''0'' diese muss ersetzt werden durch eine ''1'' dies aktiviert das Forwarding.\newline
+\lstset{
+	basicstyle=\footnotesize, frame=tb,
+	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+\begin{lstlisting}[caption={Forwarding aktivieren},label=lst:forward]
+/bin/echo "1" > /proc/sys/net/ipv4/ip_forward
+\end{lstlisting}
+\vspace{\baselineskip}
+Wurden all diese Einstellungen vorgenommen, kann begonnen werden mit der Konfiguration der Site-toSite VPN Verbindung, was im nachfolgenden Kapitel beschrieben wird.
+
+
 
 \subsection{VPN}
+Na dem die Firewall auf den Servern der Firma A und B eingerichtet wurde, muss nun die VPN Verbindung erstellt werden. Dazu dient der Firewallserver der Firma A als Server und der Firewallserver der Firma B als Client. Diese Einrichtung wird in diesem Kapitel näher beschrieben.
+
 \subsubsection{Server Firma A}
+
+
+
+
 \subsubsection{Client Firma B}
 
 
