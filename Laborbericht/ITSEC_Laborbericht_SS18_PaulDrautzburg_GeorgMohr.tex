@@ -316,18 +316,18 @@ Der Bereich Netzwerkarchitekturen ist ein sehr breites Gebiet, deshalb muss dies
 Das Netzwerk des Labors besteht netzwerktechnisch aus drei Bereichen dem Intranet, der demilitarisierten Zone und dem Internet. 
 Diese Begriffe werden folgend für den Rahmen dieses Berichts definiert und in den Kontext der Problemstellung eingeordnet.
 \begin{quotation}
-\item["Intranet"]
+\item[\textbf{"Intranet"}]
 
 Nach dem Gabler Wirtschaftslexikon wird ein Intranet als " ein unternehmensinternes Kommunikationsnetz, in dem Daten auf der Basis der Protokollfamilie TCP/IP übertragen werden" definiert \cite{intra-1} In dieser Arbeit wird der Aspekt der Protokollfamilie "TCP/IP" von vorrangiger Bedeutung sein. Der Punkt des "unternehmensinternen Kommunikationsnetzes", kann für diese Arbeit in den Hintergrund gestellt werden, da sich das Laborpraktikum auf die technischen Umsetzung beschränkt. 
 Ein weiterer wichtiger Aspekt des Intranets ist, dass es nur autorisierten Benutzern gestattet werden soll zuzugreifen.  
 
-\item["Demilitarisierte Zone"]
+\item[\textbf{"Demilitarisierte Zone"}]
 
 Der Begriff demilitarisierte Zone kommt ursprünglich aus dem militärischen Umfeld und beschreibt eine Zone, oder Bereich, in der sich keine militärischen Streitkräfte gegenüberstehen dürfen, quasi ein neutraler Bereich. 
 In der Netzwerktechnik wird dieser Begriff benutzt, um eine Zone zu beschreiben, welche sich zwischen zwei Schutzeinrichtungen befindet. Bei diesen Schutzeinrichtungen handelt es sich meistens um eine externe Firewall und eine interne Firewall. Der Hintergrund für die Einrichtung einer DMZ, ist es die Sicherheit der Komponenten und Teilnehmer eines Intranets zu sichern, falls es einen Angriff auf die Komponenten innerhalb der DMZ gibt und diese korrumpiert werden sollten. Die Komponenten innerhalb einer DMZ werden als potentielle Opfer, oder auch "Victims" bezeichnet. Es handelt sich hier meistens um Server, welche nach einem Schadensfall einfach durch einen Reboot wiederhergestellt werden können. 
 Als Alternative könnte statt der DMZ ein sogenannter Application Layer Gateway (APL) eingesetzt werden. Dieser zeichnet sich dadurch aus, dass er den Netzwerkverkehr komplett auftrennt und sich nach allen Seiten als Kommunikationspartner verhält. Zudem wäre auch eine Lösung aus DMZ und APL denkbar \cite{intra1}. Im Rahmen des Praktikums wird jedoch lediglich eine DMZ eingesetzt.
 
-\item["Internet"]
+\item[\textbf{"Internet"}]
 Das Internet ist "ein weltumspannendes, heterogenes Computernetzwerk, das auf dem Netzwerkprotokoll TCP/IP basiert. Über das Internet werden zahlreiche Dienste wie z.B. E-Mail, FTP, World Wide Web (WWW) oder IRC angeboten" \cite{Gab-Internet}. Ein wichtiger Punkt im Rahmen dieses Praktikums ist, dass das Internet innerhalb der Laborumgebung nur simuliert wird, es besteht also kein richtiger Zugang zum Internet. Dieser Fakt stellt sicher, dass der Versuchsaufbau bei falscher Konfiguration von außen nicht beschädigt werden könnte. Zudem wird somit sichergestellt, dass bei der Konfiguration der virtuellen Maschinen nur die Versionen der zu Grunde liegenden Betriebssystem-Images verwendet werden können. 
 
 \end{quotation}
@@ -361,11 +361,11 @@ In der nachfolgenden Tabelle werden, anhand der Schichten, die einzelnen Protoko
 
 Wie bereits in der Aufgabenstellung beschrieben (vgl. \ref{kap:Aufgabenstellung} \nameref{kap:Aufgabenstellung}), soll eine site-to-site VPN eingerichtet werden. Da es sich um eine die Verbindung handelt, kann der Fokus auf die Transport-orientierten Schichten der OSI-Modells 1-4 gerichtet werden. Für die Umsetzung einer VPN-Verbindung und Konfiguration der internen Firewalls sind die folgenden Protokolle von  Bedeutung. 
 \begin{quotation}
-\item ["ICMP"] Das Internet Control Message Protocol wird dazu verwendet in Rechnernetzen einen Austausch von Fehlermeldungen durchzuführen. 
-\item ["IP"] Das Internet Protocol ist ein zustands- und verbindungsloses Protokoll, welches die Implementierung der Vermittlungsschicht (3) widerspiegelt. 
-\item ["IPsec"] Das Internet Protocol Security ist eine Erweiterung des IP-Protokolls und soll eine gesicherte Kommunikation über unsichere IP-Netze ermöglichen.  
-\item ["TCP"] Das Transmission Control Protocol wird von allen modernen Betriebssystemen genutzt, um zu definieren, wie die Daten zwischen verschiedenen Netzwerkkomponenten ausgetauscht werden sollen. 
-\item ["UDP"] Das User Datagram Protocol zeichnet sich dadurch aus, dass es verbindungslos und ungeschützt ist. Es kann also nicht gesichert werden, ob ein gesendetes Datenpaket richtig (nicht verfälscht von Dritten) oder überhaupt ankommt. \cite{Kurose2008Computernetzwerke}
+\item [\textbf{"ICMP"}] Das Internet Control Message Protocol wird dazu verwendet in Rechnernetzen einen Austausch von Fehlermeldungen durchzuführen. 
+\item [\textbf{"IP"}] Das Internet Protocol ist ein zustands- und verbindungsloses Protokoll, welches die Implementierung der Vermittlungsschicht (3) widerspiegelt. 
+\item [\textbf{"IPsec"}] Das Internet Protocol Security ist eine Erweiterung des IP-Protokolls und soll eine gesicherte Kommunikation über unsichere IP-Netze ermöglichen.  
+\item [\textbf{"TCP"}] Das Transmission Control Protocol wird von allen modernen Betriebssystemen genutzt, um zu definieren, wie die Daten zwischen verschiedenen Netzwerkkomponenten ausgetauscht werden sollen. 
+\item [\textbf{"UDP"}] Das User Datagram Protocol zeichnet sich dadurch aus, dass es verbindungslos und ungeschützt ist. Es kann also nicht gesichert werden, ob ein gesendetes Datenpaket richtig (nicht verfälscht von Dritten) oder überhaupt ankommt. \cite{Kurose2008Computernetzwerke}
 \end{quotation}
 Diese beschriebenen Protokolle sind bei der Lösung der Problemstellung von großer Bedeutung. Sie werden bei der Erstellung der Lösungsskizze wieder aufgegriffen (vgl. Kapitel \ref{loesungsskizze}). Um die Beschreibung Netzwerkprotokolle zu komplettieren, muss noch eine Ebene tiefer geschaut werden: auf die Datenpakte. Im nächsten Abschnitt wird der Aufbau und die wichtigsten Eigenschaften eines Datenpakets beschrieben. 
 
