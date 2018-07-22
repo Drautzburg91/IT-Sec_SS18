@@ -32,7 +32,7 @@ Dies geschieht analog, wie in der nachfolgenden Auflistung \ref{lst:interprozess
 -A OUTPUT -o lo -j ACCEPT
 \end{lstlisting}
 \vspace{\baselineskip}
-Dabei sagt das -A an, welche Chain diese Regel angehängt werden soll. Das -i ist dabei die Option, über welches Netzwerkinterface das Paket eingegangen ist, beziehungsweise -o, um das Paket zu versenden. ???@Georg In diesem Fall das ``lo'' Netzwerkinterface. Wenn alle Prüfregeln auf das Paket zutreffen, wird mit -j entschieden, wie mit dem Paket verfahren werden soll, in diesem Beispiel soll es mit ACCEPT akzeptiert werden. 
+Dabei sagt das ''-A'' aus, an welche Chain diese Regel angehängt werden soll. Das ''-i'' ist dabei die Option, über welches Netzwerkinterface das Paket eingegangen ist, beziehungsweise ''-o'', über welches das Paket versendet werden soll. In diesem Fall das ``lo'' Netzwerkinterface. Wenn alle Prüfregeln auf das Paket zutreffen, wird mit ''-j'' entschieden, wie mit dem Paket verfahren werden soll, in diesem Beispiel soll es mit ACCEPT akzeptiert werden. 
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
