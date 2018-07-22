@@ -56,8 +56,6 @@ titlepage,   %% only the titlepage (using titlepage-environment) appears on the 
 
 %%% listings: include programming code
 \usepackage{listings}
-\renewcommand{\lstlistingname}{Auflistung}
-
 
 %%% units: technical units
 \usepackage{units}
@@ -409,6 +407,8 @@ Ein wichtiger Punkt im Zusammenspiel der Skripte und dem Betriebssystem ist die 
 
 Damit wurden alle wichtigen Besonderheiten des Betriebssystem im Rahmen des Praktikums eingeführt. Im nächsten Kapitel wird das "IP-Tables" Paket von Linux eingeführt, da dieses einen Grundstein für die Lösung der Aufgabenstellung im Bezug auf die internen Firewalls darstellt. 
 \subsection{IP-Tables}\label{iptables}
+In diesem Kapitel werden die Möglichkeiten des Linux Pakets IP-Tables zur Filterung von Paketen beschrieben und eingeführt. Mit Hilfe dieses Pakets werden die für die Lösung erforderlichen Firewall-Skripte erstellt.  
+
 \subsubsection{Allgemein}
 Das Paket "IP-Tables" ist Standardmäßig in der Linux Installation enthalten. Es kann aber auch einfach über den Paketmanager mit Hilfe des Befehls "apt-get install iptables" installiert werden. In diesem Fall war das Paket schon installiert und musste nicht mehr manuell installiert werden. 
 Grundlegend stellt das IP-Tables einen Paketfilter dar, welcher Pakete auf IP-Ebene auf Basis zuvor definierten Regeln filtert. Empfangene Pakete werden überprüft bevor sie weitergeleitet werden. Umgekehrt werden ausgehenden Pakete geprüft, bevor sie den Rechner verlassen. Es kann aber auch sein, dass der Rechner als Router fungiert, so müssen alle Pakete geprüft werden während diese weitergeleitet werden sollen. 
@@ -485,21 +485,123 @@ iptables -P FORWARD DROP
 
 Alle beschriebenen Möglichkeiten von IP-Tables wurden im Rahmen des Praktikums für die Lösung der Problemstellung eingesetzt. Dies ist jedoch nur ein Teil der Möglichkeiten von IP-Tables und spiegelt nicht den kompletten Funktionsumfang ab. 
 Im folgenden Kapitel wird eine Einführung in die Grundlagen einer Public Key Infrastructure gegeben, wie sie auch für das Praktikum benötigt wird.
-
-
 \subsection{Public Key Infrastructure}\label{PKI}
+Eine Public Key Infrastructure ist ein System anhand dessen digitale Zertifikate ausgestellt, geprüft und verteilt werden können. Diese ausgestellten Zertifikate werden dann für die sichere Kommunikation zwischen Netzwerkteilnehmern genutzt.
+\subsubsection{Aufbau einer PKI}
+Eine PKI besteht grundsätzlich aus folgenden Bestandteilen
+
+\begin{quotation}
+\item [\textbf{Digitale Zertifikate:}]
+Mit Hilfe der digitalen Zertifikate wird die Echtheit eines Objekts sichergestellt, zudem kann die Authentizität und Integrität mit Hilfe von kryptographischen Verfahren nachgeprüft werden. Ein Zertifikat enthält die Schlüssel, welche zur Authentifizierung und Ver- und Entschlüsselung der zu übertragenden Daten, sorgen. Die Ausstellung eines digitalen Zertifikats erfolgt durch die Zertifizierungsstelle (CA)
+\item [\textbf{Zertifizierungsstelle (CA):}]Eine Zertifizierungsstelle (CA), bildet den Kern einer PKI. Sie ist für das Herausgeben der Zertifikate verantwortlich und trägt die Verantwortung für die Integrität dieser. 
+\item [\textbf{Registrierungsstelle (RA):}]Eine Registrierungsstelle (RA), ist eine Organisation bei der Zertifikate beantragt werden können. Dies können Personen, Maschinen oder auch untergeordnete Zertifizierungsstellen sein. Die RA prüft den Zertifizierungsantrag und nach erfolgreicher Prüfung, kann dieses dann durch die Zertifizierungsstelle signiert werden. 
+\item [\textbf{Zertifikatssperrliste (CRL):}] Eine Zertifikatssperrliste(CRL), enthält alle Zertifikate, welche vor ihrem eigentlich Ablaufdatum ungültig geworden sind. Dies kann bspw. durch einen geknackten Algorithmus bei einem der Schlüssel passieren. 
+\item [\textbf{Verzeichnisdienst (Directory Service):}] Ein Verzeichnisdienst, enthält alle ausgestellten Zertifikate. In Unternehmen ist dieser Dienst meistens durch ein LDAP-Server realisiert. 
+\item [\textbf{Validierungsdienst (VA)}:] Ein Validierungsdienst(VA), stell die Möglichkeit bereit ein Zertifikat in Echtzeit zu prüfen. Im Normalfall ist dies durch OCSP oder SCVP realisiert.  
+\end{quotation}
+
+Im Rahmen des Praktikums wurde eine solche PKI bereits zur Verfügung gestellt. Im nächsten Abschnitt wird die Erstellung eines Server-Zertifikats gezeigt, wie es auch für die Lösung der Aufgabenstellung erforderlich ist. 
+\subsubsection{Erstellung eines Server-Zertifikats}
+Der Ablauf für die Erstellung eines Server-Zertifikats besteht aus insgesamt sechs Schritten, diese werden nun ihrer Reihenfolge nach beschrieben. 
+
+\begin{enumerate}
+\item Der Benutzer muss sich zuerst ein Schlusslpaar erzeugen (privater/öffentlicher)\cite{JueNeuSaDue}.
+\item Auf der CA-Seite, kann sich der der Benutzer nun die req.cnf runterladen. In dieser Datei sind alle Grundeinstellungen der CA enthalten\cite{JueNeuSaDue}. 
+\item Aus der req-Datei und dem Schlüssel kann der Benutzer nun einen Zertifikats-Request erstellen (Request, Fileextension csr). Dieser Request enthält den öffentlichen Schlüssel, welcher dann von der CA beglaubigt wird\cite{JueNeuSaDue}. 
+\item Jetzt kann die csr-Datei auf die CA-Seite hochgeladen werden\cite{JueNeuSaDue}. 
+\item Der Request wird nun auf der CA-Server verarbeitet und das signierte Zertifikat für den Benutzer auf der Seite der CA zum Download bereitgestellt\cite{JueNeuSaDue}. 
+\item Diese crt-Datei, welche nun heruntergeladen werden kann, kann nun einfach für die Sicherung der Netzwerkkomponenten genutzt werden, bspw. für den VPN-Client oder VPN-Server\cite{JueNeuSaDue}.  
+\end{enumerate}
+
+Für die Lösung der Aufgabenstellung muss dieser Vorgang insgesamt zwei Mal durchgeführt werden, da für Client und Server ein solches Server-Zertifikat benötigt wird. Zu beachten ist auch, dass die Software OpenSSL zwingend, für die Erstellung des privaten Schlüssels, installiert sein muss.
+
+Der Gesamtprozess zur Erstellung eines Server-Zertifikats wird in Abbildung \ref{fig:Zertifikaserstellung} nochmals verdeutlicht.  
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{pictures/Zertifikatserstellung.png}
+	\caption{Zertifikatserstellung im Labor\cite{JueNeuSaDue}}
+	\label{fig:Zertifikaserstellung}
+\end{figure}
+
+Im folgenden Abschnitt wird, die für die Umsetzung der VPN-Verbindung benötigte Software OpenVPN eingeführt. 
+
 \subsection{OpenVPN}\label{openvpn}
+
+Für die Lösung der Problemstellung wurde die Software OpenVPN genutzt, da sie den Anforderungen an die Aufgabenstellung erfüllt. Da OpenVPN zwingend die Software OpenSSL voraussetzt und diese ohnehin für die Erstellung der privaten Schlüssel genutzt wird, ist die Wahl schnell getroffen\cite{openV-1}. 
+
+\subsubsection{Grundlagen}
+OpenVPN ist eine frei verfügbare Software für die Einrichtung eines Virtuellen Netzwerks über ein verschlüsselte TLS/SSL-Verbindungen. Wie bereits angesprochen, erfolgt die Verschlüsselung mit Hilfe von OpenSSL. Es kann wahlweise UPD oder TCP als Transportprotokoll eingesetzt werden. Zur Authentifizierung bietet OpenVPN das sog. Pre-shared Key Verfahren oder eine Authentifizierung über Zertifikate, welches im Rahmen des Praktikums auch eingesetzt wurde\cite{openV-1}. 
+
+OpenVPN bietet grundlegend folgende Eigenschaften:
+
+\begin{itemize}
+\item Verfügbarkeit verschiedenen Betriebsmodi (Bridging oder Routing),
+\item Tunnelung in beliebige Subnetze 
+\item Verschiedene Verschlüsselungsarten (Pre-shared Key / Zertifikate)
+\item Skalierbarkeit bei VPN-Serverfarmen
+\end{itemize}
+
+\subsubsection{Authentifizierung}
+Wie schon angesprochen verfügt OpenVPN über zwei verschiedene Methoden zur Authentifizierung, folgend werden beide gegenüberstellt. 
+
+\begin{quotation}
+\item[\textbf{Pre-shared Key:}]
+ist ein symmetrisches Verfahren, der Schlüssel wird im VPN-Server erstellt und an die Clients verteilt. Es handelt sich um ein sehr einfaches Verfahren. Jedoch ist es nicht sehr sicher, da es nur einen Schlüssel gibt und falls dieser korrumpiert werden sollte, müssten sämtliche Kommunikationsteilnehmer neue Schlüssel erhalten und wären potentiell in Gefahr\cite{openV-1}. 
+
+\item[\textbf{Zertifikatsbasiert:}]
+ist ein auf dem TLS-Protokoll basierendes Verfahren, welches aktuell als sehr sicher klassifiziert wird. Dieses Verfahren beruht auf privaten und öffentlichen Schlüsselpaaren. Der Server und der Client erhalten jeweils ein öffentliches und privates Zertifikat. Mit Hilfe von easy-rsa könnten auch sehr einfach diese nötigen Zertifikate erstellt werden. Diese Möglichkeit wird jedoch im Praktikum durch die PKI nichtig. Allgemein ist dieses Verfahren sicherer als das Pre-shard Key, es bring aber auch eine höhere Komplexität mit\cite{openV-1}. 
+\end{quotation} 
+
+\subsubsection{Kommunikation}
+
+Mittels OpenVPN kann entweder eine Client-Server Verbindung aufgebaut werden, auch Roadwarrior genannt. Oder eine, wie in der Aufgabenstellung gefordert, eine Site-to-Site Verbindung. Im Standard wird die Kommunikation über das zustandslose UDP-Protokoll abgewickelt. Diese kann jedoch auch auf das TCP-Protokoll umgestellt werden\cite{openV-1}. 
+
+Zudem bietet OpenVPN auch verschiedene Netzwerkmodi an Bridging-Mode (Tap-Device) und Routing-Mode (Tun-Device). 
+Diese zwei Modi werden folgend gegenübergestellt. 
+
+\begin{quotation}
+\item[\textbf{Bridging-Mode(Tap-Device):}]
+in diesem Modus wird ein vollständiges Tunneln des Ethernet-Frames (Layer 2) vorgenommen. Der Client erhält in diesem Fall die IP-Adresse des aktuellen Subnetzes. Die Broadcast müssen in dem Fall auch weitergeleitet werden, um eine potentielle Namensauflösung via SMB-Protokoll zu gewährleisten\cite{openV-1}.
+
+\item[\textbf{Routing-Mode (Tun-Device):}]
+in diesem Modus werden ausschließlich IP-Pakete (Layer 3) über einen verschlüsselten Tunnel verschickt. Jeder Kommunikationspartner bekommt eine virtuelle IP-Adresse eines fiktiven Subnetzes. Somit ist der Zugriff auf das dahinter liegenden Netz standardmäßig nicht möglich. Dies muss dann über die Routing-Tabellen der Firewalls  oder IP-Forwarding realisiert werden\cite{openV-1}.
+\end{quotation}
+
+In der folgenden Tabelle werden abschließend für dieses Kapitel noch die Vor- und Nachteile der beiden beschrieben Modi gegenüber gestellt. 
+
+\begin{table}[!h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|}
+\hline
+ & \textbf{Bridging-Modus (Tap-Device)} & \textbf{Routing-Modus(Tun-Device)} \\ \hline
+\textbf{Vorteile} & \begin{tabular}[c]{@{}l@{}}Agiert wie ein eigenständiger Netzwerkadapter\\ \\ Verschiedene Netzwerkprotkolle verfügbar\\ \\ Client ist transparent im Zielnetz\end{tabular} & \begin{tabular}[c]{@{}l@{}}Geringer Traffic-Overhead\\ \\ Da kein Ehternet-Layer, geringe Bandbreite\\ \\ Gute Skalierbarkeit\end{tabular} \\ \hline
+\textbf{Nachteile} & \begin{tabular}[c]{@{}l@{}}Schlechte Skalierbakeit\\ \\ Hoher Broadcast-Overhead am VPN-Tunnel\end{tabular} & \begin{tabular}[c]{@{}l@{}}Nur IP-Pakete möglich \\ \\ Keine Broadcasts möglich\end{tabular} \\ \hline
+\end{tabular}%
+}
+\caption{Bridging-Mode vs. Routing-Mode}
+\label{my-Tun/Tap}
+\end{table}
+Für die Lösung der Aufgabe wurde der Routing-Mode (Tun-Device) genutzt. 
+
+Mit Abschluss dieses Kapitel wurden alle theoretischen Grundlagen, welche für den Rahmen des Laborpraktikums relevant sind, eingeführt. Im anschließenden Kapitel wird die Lösungskizze für die Problemstellung beschrieben. 
+ 
 \include{chapters/loesungsskizze}\label{Lösungsskizze}
 \include{chapters/Auswertung}\label{Auswertung}
 \section{Fazit}\label{Fazit}
+Trotz der nicht Aufklärung des Fehlers in der konfigurierten Lösung konnten einige sehr wichtige Erkenntnisse aus diesem Praktikum gewonnen werden. Der Bereich der Netzwerkarchitektur in Verbindung mit den vielen Sicherheitsaspekten wird im heutigen Zeitalter immer entscheidender. Fast jeder Mitarbeiter in eines globalen Unternehmens nutzt fast täglich die Möglichkeiten einer sicheren VPN-Verbindung, ohne sich darüber im klaren zu sein, was für eine Komplexität bei der Bereitstellung einer solchen Verbindung überwunden werden muss. 
 
+Nach der Absolvierung des Laborpraktikums wurden viele Aspekte, welche vorher einfach hingenommen wurden, kritisch und fachlich beleuchtet. Das Einrichten einer VPN-Verbindung mit den dazugehörigen Zertifikate, sowie die Konfiguration der internen Firewalls, hat mal wieder die Annahme bestätigt, dass es bei der Konfiguration von Netzwerken auf der Basis von Linux auf jede Kleinigkeit ankommt. So führt eine Leerzeile in einem Skript dazu, dass ein komplettes System nicht mehr so reagiert wie es sollte. Die Schwierigkeit solch einen Fehler zu finden ist, wie das Suchen der Nadeln [...]. Zudem gestaltet sich die Fehlersuche in einem Netzwerk deutlich komplizierter, als bspw. in der Anwendungsentwicklung. Bei der Anwendungsentwicklung kann durch Einsatz einer IDE und dem darin enthaltenen Debugger relativ schnell auf einen Fehler geschlossen werden. Da bei der Fehlersuche eher die Gewohnheiten aus der Anwendungsentwicklung zu Grunde lagen, brauchte es etwas Zeit bis es Möglich war, in dieser Domäne eine effektive und erfolgreiche Fehlersuche durchzuführen. 
+
+Der Punkt der Fehlersuche war auch der, mit dem der größte Zeitaufwand verbunden war. Die rein logische Umsetzung der Problemstellung war relativ schnell erledigt. Auch das parallele Aufsetzen mehrerer Systeme mit dem Lösungsansatz führte immer zum gleichen Fehlerfall, wie in der Auswertung bereits beschrieben. Selbst die intensive Hilfe der Laborassistenz konnte den Fehler nicht aufklären. Da es bei der Laborumgebung um eine virtualisierte Umgebung handelte, liegt die Vermutung nahe, dass der Fehler in der Konfiguration der virtuellen Umgebung zu finden sein könnte. Dies bleibt jedoch nur eine reine Vermutungen und konnte nicht mit Fakten belegt werden. 
+
+Es bleibt jedoch festzuhalten, dass es die Lernkurve im Rahmen des Praktikums sehr steil war. Die Bereiche der Netzwerkarchitekturen bis hin zur Erstellung eines Server-Zertifikats sind aktuell eine sehr wichtige Domäne in der Informatik. 
 
 %%%
 %%% end main document
 %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
- \appendix  %% include it, if something (bibliography, index, ...) follows below
+ \appendix %% include it, if something (bibliography, index, ...) follows below
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
