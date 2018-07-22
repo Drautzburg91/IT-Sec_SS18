@@ -1,9 +1,11 @@
 % !TEX encoding = UTF-8 Unicode
 \section{Lösungsskizze}\label{loesungsskizze}
-In diesem Kapitel wird sich mit dem Thema befasst, wie sich eine Side-to-Side VPN Verbindung, die die Firmen A und B wie in Kapitel \ref{laborumgebung} beschrieben verbindet.
-Dazu waren zu Beginn mehrere Vorüberlegungen zu tätigen. Dies sind zum einen, wie wird das innere Netz der Firmen A und B geschützt, dann welcher VPN Dienst kann für diesen Zweck verwendet werden und welche weiteren Strategien braucht es bei der Umsetzung der Security Policies der Firmen. 
+In diesem Kapitel wird sich mit dem Thema befasst, wie sich eine Site-to-Site VPN Verbindung, die die Firmen A und B wie in Kapitel \ref{laborumgebung} beschrieben, verbindet.
+Dazu waren zu Beginn mehrere Vorüberlegungen zu tätigen. Dies sind zum einen: wie wird das innere Netz der Firmen A und B geschützt und zum anderen, welcher VPN Dienst für diesen Zweck verwendet werden kann und welche weiteren Strategien bei der Umsetzung der Security Policies der Firmen benötigt werden. 
 \subsection{Firewall}\label{firewallloesung}
-Wenn eine Firewall aufgebaut werden soll, muss sich zu beginn überlegt werden, welche allgemeine Strategie mit der Firewall gefahren werden soll. Das heißt sollen alle Verbindungen Standardmäßig freigegeben werden und nur explizit nicht erlaubt Verbindungen geblockt werden (Default-Allow-Strategy), oder sollen alle Verbindungen blockiert werden und nur die die explizit erlaubt wurden, geöffnet werden (Default-Deny-Strategy). Im Standardfall wird in Unternehmen, die Strategie Default-Deny verwendet, weshalb auch im Versuchsaufbau diese Strategie gewählt wurde. Eine Firewall wird mit Hilfe des Userspace-Programmes IPTABLES (siehe Kapitel \ref{iptables}) unter Linux realisiert. Dafür wird eine Rules Datei (nachfolgend Skript genannt) angelegt, in dieser werden die Einstellungen und Regeln für die Firewall definiert. Zu Beginn des Skriptes wird der Interpreter für den Code angegeben. Dann wird begonnen die durch die Default Strategie vorgegebenen Default Policies umzusetzen (siehe Auflistung \ref{lst:defaultPolicy}). Dabei sagt das -P, dass die Policy angesprochen werden soll, das INPUT, OUTPUT und FORWARD bezieht sich auf die im Kapitel \ref{iptables} vorgestellten Chains. DROP sagt dabei aus, dass die eintreffenden Pakete, wenn keine weiteren Regeln definiert oder zutreffen nicht weitergeleitet und ``fallengelassen'' werden sollen.
+Wenn eine Firewall aufgebaut werden soll, muss zu Beginn überlegt werden, welche allgemeine Strategie mit der Firewall gefahren werden soll. Das heißt, sollen alle Verbindungen standardmäßig freigegeben werden und nur explizit nicht erlaubte Verbindungen geblockt werden (Default-Allow-Strategy), oder sollen alle Verbindungen blockiert werden und nur die die explizit erlaubt wurden, geöffnet werden (Default-Deny-Strategy). 
+
+Im Standardfall wird in Unternehmen die Strategie Default-Deny verwendet, weshalb auch im Versuchsaufbau diese Strategie gewählt wurde. Eine Firewall wird mit Hilfe des Userspace-Programmes IPTABLES (siehe Kapitel \ref{iptables}) unter Linux realisiert. Dafür wird eine Rules Datei (nachfolgend Skript genannt) angelegt.Iin dieser werden die Einstellungen und Regeln für die Firewall definiert. Zu Beginn des Skriptes wird der Interpreter für den Code angegeben. Dann wird begonnen, die durch die Default Strategie vorgegebenen Default Policies umzusetzen (siehe Auflistung \ref{lst:defaultPolicy}). Dabei sagt das -P, dass die Policy angesprochen werden soll, das INPUT, OUTPUT und FORWARD bezieht sich auf die im Kapitel \ref{iptables} vorgestellten Chains. DROP sagt dabei aus, dass die eintreffenden Pakete, wenn keine weiteren Regeln definiert oder zutreffen nicht weitergeleitet und "fallengelassen'' werden sollen.
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -17,7 +19,8 @@ Wenn eine Firewall aufgebaut werden soll, muss sich zu beginn überlegt werden, 
 -P FORWARD DROP
 \end{lstlisting}
 \vspace{\baselineskip}
-Nach dem die Default Policy erfolgreich eingeführt wurde, werden die feingranulareren Regeln definiert. Dies setzt die Verwendung des Befehles -F voraus. Dieser löscht alle bisherigen Filterregeln, um die nach folgenden neu definierten Regeln einzuführen. Bei Linux ist dabei zu beachten das ein Teil der Interprozesskommunikation über das interne Netzwerk läuft. Dafür ist es nötig diese Kommunikation zuzulassen, dies geschieht wie in der nachfolgenden Auflistung \ref{lst:interprozess} zusehen ist. 
+Nach dem die Default Policy erfolgreich eingeführt wurde, werden die feingranularen Regeln definiert. Dies setzt die Verwendung des Befehles -F voraus. Dieser löscht alle bisherigen Filterregeln, um die nachfolgenden neu definierten Regeln einzuführen. Bei Linux ist dabei zu beachten, dass ein Teil der Interprozesskommunikation über das interne Netzwerk läuft. Dafür ist es nötig diese Kommunikation zuzulassen. 
+Dies geschieht analog, wie in der nachfolgenden Auflistung \ref{lst:interprozess} zu sehen ist. 
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -29,7 +32,7 @@ Nach dem die Default Policy erfolgreich eingeführt wurde, werden die feingranul
 -A OUTPUT -o lo -j ACCEPT
 \end{lstlisting}
 \vspace{\baselineskip}
-Dabei sagt das -A an welche Chain diese Regel angehängt werden soll. Das -i ist dabei die Option über welches Netzwerkinterface das Paket eingegangen ist, beziehungsweise -o für das Paket versenden. In diesem Fall das ``lo'' Netzwerkinterface. Wenn alle Prüfregeln auf das Paket zutreffen wird mit -j entschieden wie mit dem Paket verfahren werden soll, in diesem Beispiel soll es mit ACCEPT akzeptiet werden. 
+Dabei sagt das -A an, welche Chain diese Regel angehängt werden soll. Das -i ist dabei die Option, über welches Netzwerkinterface das Paket eingegangen ist, beziehungsweise -o, um das Paket zu versenden. ???@Georg In diesem Fall das ``lo'' Netzwerkinterface. Wenn alle Prüfregeln auf das Paket zutreffen, wird mit -j entschieden, wie mit dem Paket verfahren werden soll, in diesem Beispiel soll es mit ACCEPT akzeptiert werden. 
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -51,7 +54,7 @@ Dabei sagt das -A an welche Chain diese Regel angehängt werden soll. Das -i ist
 -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 \end{lstlisting}
 \vspace{\baselineskip}
-Die in Auflistung \ref{lst:allgemeineRegeln} dargestellten Regeln sind allgemeine Regeln für die Firewall, diese erlauben das empfangen von Pinganfragen, den Fernzugriff mittels SSH, alle neuen Verbindungen von innen nach außen und alle bereits aufgebauten Verbindungen beziehungsweiße alle Verbindungen die einen Bezug auf eine andere Verbindung besitzen. In der nachfolgenden Tabelle \ref*{tab:iptablesOptionen} werden die hier verwendeten Optionen nochmals näher beschrieben.
+Die, in der Auflistung \ref{lst:allgemeineRegeln} dargestellten Regeln, sind allgemeine Regeln für die Firewall. Diese erlauben das Empfangen von Pinganfragen, den Fernzugriff mittels SSH, alle neuen Verbindungen von innen nach außen und alle bereits aufgebauten Verbindungen, beziehungsweise alle Verbindungen, die einen Bezug auf eine andere Verbindung besitzen. In der nachfolgenden Tabelle \ref*{tab:iptablesOptionen} werden die hier verwendeten Optionen nochmals näher beschrieben.
 \begin{table}[h]
 	\centering
 \begin{tabular}{|p{2cm}|p{13cm}|}
@@ -71,7 +74,7 @@ Die in Auflistung \ref{lst:allgemeineRegeln} dargestellten Regeln sind allgemein
 \end{tabular} 
 \caption{IPTABLES Optionen und Beschreibung} \label{tab:iptablesOptionen}
 \end{table}
-Nach den allgemeine Regeln müssen nun die VPN spezifischen Regeln definiert werden. Dazu muss man die auf den VPN Ports eintreffenden und ausgehenden Pakete betrachten. Diese Ports sind entweder 1194 oder 1195. In der Auflistung \ref{lst:VPNRegeln} sind VPN Regeln zusehen. Eine Besonderheit bei VPN ist das zum einen alle verbinungen die über das Netzwerkinterface tun0 eintreffenden Pakete ohne Überprüfung an das Inteface eth0 übergeben werden. Des weiteren wird noch die Tabelle NAT benötigt, was das ''*nat'' angibt. In dieser Tabelle gibt es die Chain POSTROUTING, über diese kann nachträglich der Verkehrsheader eines Paketes verändert werden. MASQUERADE hat dabei die Funktion das wenn ein Paket versendet wird die Source-IP-Adresse so verändert wird das nur noch die IP-Adresse des Firewallservers ersichtlich ist. Dies hat den Grund das von außen nicht ersichtlich wird, was sich für IP-Adressen hinter der Firewall befinden und es so Angreifern erschwert wird diese anzugreifen.
+Nach den allgemeine Regeln müssen nun die VPN spezifischen Regeln definiert werden. Dazu muss man die auf den VPN Ports eintreffenden und ausgehenden Pakete betrachten. Diese Ports sind entweder 1194 oder 1195. In der Auflistung \ref{lst:VPNRegeln} sind VPN Regeln zusehen. Eine Besonderheit bei VPN ist, das zum einen alle Verbindungen, die über das Netzwerkinterface tun0 eintreffenden Pakete ohne Überprüfung an das Inteface eth0 übergeben werden. Des weiteren wird noch die Tabelle NAT benötigt, was das ''*nat'' angibt. In dieser Tabelle gibt es die Chain POSTROUTING. Über diese kann nachträglich der Verkehrsheader eines Paketes verändert werden. MASQUERADE hat dabei die Funktion, dass wenn ein Paket versendet wird, die Source-IP-Adresse so verändert wird, dass nur noch die IP-Adresse des Firewallservers ersichtlich ist. Dies hat den Grund, dass von außen nicht ersichtlich wird, welche IP-Adressen sich hinter der Firewall befinden und es so Angreifern erschwert wird, diese anzugreifen.
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -102,7 +105,7 @@ COMMIT
 COMMIT
 \end{lstlisting}
 \vspace{\baselineskip}
-Nach dem erstellen des Skriptes, muss dieses nun eingespielt werden. Dazu wird der Befehl ''iptables-restore'' verwendet. Dieser wird exemplarisch in der Auflistung \ref{lst:fwrestorea} veranschaulicht, dabei liegt das Skript im Ordner ''etc''.
+Nach dem Erstellen des Skriptes, muss dieses nun eingespielt werden. Dazu wird der Befehl ''iptables-restore'' verwendet. Dieser wird exemplarisch in der Auflistung \ref{lst:fwrestorea} veranschaulicht, dabei liegt das Skript im Ordner ''etc''.
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -112,7 +115,7 @@ Nach dem erstellen des Skriptes, muss dieses nun eingespielt werden. Dazu wird d
 iptable-restore < etc/iptables.firewall-a.rules
 \end{lstlisting}
 \vspace{\baselineskip}
-Nach dem das Skript eingespielt wurde, muss dieses noch so konfiguriert werden, dass es nach einem Serverneustart automatisch neu eingespielt wird. Dazu könne zwei Arten verwendet werden. Zum einen mit Hilfe des ''if-pre-up.d'' Directories. Dabei wird eine neue Datei angelegt mit dem Namen ''iptables'' angelegt. In der Auflistung \ref{lst:neustart} wird der Inhalt, der neu angelegten Datei gezeigt. Nun muss die Datei noch Ausführbar gemacht werden, dies geschieht mit Hilfe des Befehls ''chmod +x''
+Nach dem das Skript eingespielt wurde, muss dieses noch so konfiguriert werden, sodass es nach einem Serverneustart automatisch neu eingespielt wird. Dazu könne zwei Arten verwendet werden. Zum einen mit Hilfe des ''if-pre-up.d'' Directories. Dabei wird eine neue Datei angelegt mit dem Namen ''iptables''. In der Auflistung \ref{lst:neustart} wird der Inhalt, der neu angelegten Datei gezeigt. Nun muss die Datei noch ausführbar gemacht werden, dies geschieht mit Hilfe des Befehls ''chmod +x''
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -123,7 +126,7 @@ Nach dem das Skript eingespielt wurde, muss dieses noch so konfiguriert werden, 
 /sbin/iptasbles-restore < /etc/iptables.fwirewall-a.rules
 \end{lstlisting}
 \vspace{\baselineskip}
-Die zweite Möglichkeit des automatischen Neuladens der Firewall ist mit Hilfe des Tools ''iptables-peristent''. Dieses Tool muss mit ''aptitute'' installiert werden. Nach dem das Tool installiert wurde, können mit dem Befehl ''iptables-save > /etc/iptables/rules.v4'' die Regeln für jeden Neustart automatisch geladen werden. 
+Die zweite Möglichkeit des automatischen Neuladens der Firewall, ist mit Hilfe des Tools ''iptables-peristent''. Dieses Tool muss mit ''aptitute'' installiert werden. Nach dem das Tool installiert wurde, können mit dem Befehl ''iptables-save > /etc/iptables/rules.v4'' die Regeln für jeden Neustart automatisch geladen werden. 
 \newline 
 Eine weitere Konfiguration die vorgenommen werden muss, ist das Akzeptieren des Forwardings. Dazu muss im Verzeichnis ''/proc'' die Datei ''/proc/sys/net/ipv4/ip\_forward'' die Zeile in der Auflistung \ref{lst:forward} eingefügt werden. Zu Beginn steht in dieser Datei lediglich eine ''0'' diese muss ersetzt werden durch eine ''1'' dies aktiviert das Forwarding.\newline
 \lstset{
@@ -134,17 +137,17 @@ Eine weitere Konfiguration die vorgenommen werden muss, ist das Akzeptieren des 
 /bin/echo "1" > /proc/sys/net/ipv4/ip_forward
 \end{lstlisting}
 \vspace{\baselineskip}
-Wurden all diese Einstellungen vorgenommen, kann begonnen werden mit der Konfiguration der Site-toSite VPN Verbindung, was im nachfolgenden Kapitel beschrieben wird.
+Wurden all diese Einstellungen vorgenommen, kann  mit der Konfiguration der Site-toSite VPN Verbindung begonnen werden, was im nachfolgenden Kapitel beschrieben wird.
 
 
 
 \subsection{VPN}
 Nach dem die Firewall auf den Servern der Firma A und B eingerichtet wurde, muss nun die VPN Verbindung erstellt werden. Dazu dient der Firewallserver der Firma A als Server und der Firewallserver der Firma B als Client. Diese Einrichtung wird in diesem Kapitel näher beschrieben. \newline
-Dafür muss zu Beginn auf beiden Servern das in Kapitel \ref{openvpn} vorgestellte Tool OpenVPN installiert werden. Dies geschieht wie schon im Kapitel \ref{firewallloesung}  erwähnt mit dem Tool ''aptitute''. Nach der Installation müssen wie nachfolgend erklärt für den Server der Firma A und B ein Serverzertifikat erstellt werden.
+Dafür muss zu Beginn auf beiden Servern das in Kapitel \ref{openvpn} vorgestellte Tool OpenVPN installiert werden. Dies geschieht, wie schon im Kapitel \ref{firewallloesung}  erwähnt, mit dem Tool ''aptitute''. Nach der Installation müssen, wie nachfolgend erklärt, für den Server der Firma A und B ein Serverzertifikat erstellt werden.
 
 \subsubsection{Serverzertifikate}
-Wie schon in Kapitel \ref{PKI} erklärt wird für die  Einrichtung eines VPN's Zertifikate benötigt. Diese werden verwendet um eine Verbindungsverschlüsselung zu realisieren. In diesem Kapitelteil wird anhand der Firma A erklärt, wie ein solches Zertifikat in der Laborumgebung erstellt wird, um ein Zertifikat für Firma B zu erstellen, ist der gleiche Prozess notwendig. \newline
-Für das Erstellen eines Zertifikates ist das Tool OpenSSL notwendig. Über OpenSSL wird ein öffentlicher und privater Schlüssel erzeugt. Nach dem diese erstellt wurden, muss von der Zertifizierungsstelle die Konfigurationsdatei geladen werden. Mit Hilfe dieser Konfigurationsdatei des privaten Schlüssels und des Tools OpenSSL wird nun eine CSR (Certificate Signing Request) Datei erzeugt. Nach dem diese Datei erzeugt wurde, muss diese zur Zertifizierungsstelle hochgeladen werden. Nach dem Upload der Datei (Zertifikat), muss diese nun Signiert werden. Dies wir im Labor mit einem Shellskript realisiert. Nach dem Signieren kann nun das fertige Zertifikat geladen und auf dem Server 
+Wie schon in Kapitel \ref{PKI} erklärt, wird für die  Einrichtung eines VPN's Zertifikate benötigt. Diese werden verwendet, um eine Verbindungsverschlüsselung zu realisieren. In diesem Kapitelteil wird anhand der Firma A erklärt, wie ein solches Zertifikat in der Laborumgebung erstellt wird. Um ein Zertifikat für Firma B zu erstellen, ist der gleiche Prozess notwendig. \newline
+Für das Erstellen eines Zertifikates ist das Tool OpenSSL notwendig. Über OpenSSL wird ein öffentlicher und privater Schlüssel erzeugt. Nach dem diese erstellt wurden, muss von der Zertifizierungsstelle die Konfigurationsdatei geladen werden. Mit Hilfe dieser Konfigurationsdatei des privaten Schlüssels und des Tools OpenSSL wird nun eine CSR (Certificate Signing Request) Datei erzeugt. Nach dem diese Datei erzeugt wurde, muss diese zur Zertifizierungsstelle hochgeladen werden. Nach dem Upload der Datei (Zertifikat), muss diese nun signiert werden. Dies wird im Labor mit einem Shellskript realisiert. Nach dem Signieren kann nun das fertige Zertifikat geladen und auf dem Server 
 abgelegt werden. In der Auflistung \ref{lst:openssl}  werden die einzelnen Befehle zur Erstellung der Schlüssel und der CSR Datei gezeigt und die einzelnen Befehle in der Tabelle \ref{tab:openSSLOptionen} näher beschrieben.\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -185,7 +188,7 @@ openssl req -new -key firma-A.key -config req.cnf -reqexts v3_req_srv -out CSR-f
 \end{table}
 
 \subsubsection{Server Firma A}
-Nach dem die Zertifikate wie im vorherigen Kapitel erstellt wurden, kann nun mit dem Konfigurieren des VPN-Servers begonnen werden. Dazu wird zuerst mittels des Root-Users das Verzeichnis ''/etc/opnevpn'' erstellt. Nach dem dieses erstellt wurde werden zwei Unterverzeichnisse ''/etc/openvpn/certs'' und ''/etc/openvpn/keys'' angelegt. In das Unterverzeichnis ''certs'' werden das Serverzertifikat ''fw2-firma-A.crt'' und die Zertifikatschain (von der Zertifizierungstelle) kopiert. In das Unterverzeichnis ''keys'' wird der private Schlüssel verschoben. Da der private Schlüssel geheimgehalten werden soll, muss die Berechtigung für das Unterverzeichnis noch geändert werden. Dies wird mit dem Befehl ''chmod -R 600 /etc/openvpn/keys/'' bewerkstelligt. Der nächste Schritt ist das erstellen des Diffie-Hellman Schlüssels. Dieser Schlüssel wird später benötigt um später die Verbindung symmetrisch zu verschlüsseln. Der dafür notwendige Befehl wird in der Auflistung \ref{lst:DH} gezeigt.\newline
+Nach dem die Zertifikate, wie im vorherigen Kapitel erstellt wurden, kann nun mit dem Konfigurieren des VPN-Servers begonnen werden. Dazu wird zuerst mittels Root-Users das Verzeichnis ''/etc/opnevpn'' erstellt. Nach dem dieses erstellt wurde, werden zwei Unterverzeichnisse ''/etc/openvpn/certs'' und ''/etc/openvpn/keys'' angelegt. In das Unterverzeichnis ''certs'' werden das Serverzertifikat ''fw2-firma-A.crt'' und die Zertifikatschain (von der Zertifizierungstelle) kopiert. In das Unterverzeichnis ''keys'' wird der private Schlüssel verschoben. Da der private Schlüssel geheimgehalten werden soll, muss die Berechtigung für das Unterverzeichnis noch geändert werden. Dies wird mit dem Befehl ''chmod -R 600 /etc/openvpn/keys/'' bewerkstelligt. Der nächste Schritt ist das erstellen des Diffie-Hellman Schlüssels. Dieser Schlüssel wird später benötigt um später die Verbindung symmetrisch zu verschlüsseln. Der dafür notwendige Befehl wird in der Auflistung \ref{lst:DH} gezeigt.\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
 	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
@@ -194,7 +197,7 @@ Nach dem die Zertifikate wie im vorherigen Kapitel erstellt wurden, kann nun mit
 openssl dhparam -out dh2048.pem 2048
 \end{lstlisting}
 \vspace{\baselineskip}
-Eine besondere Eigenschaft des Site-to-Site VPN's ist das man für jeden einzelnen Clienten eine besondere Konfiguration ''pushen'' kann. Dies bringt den Vorteil, dass wie hier verwendet, ein Client die Infrastruktur hinter der Firewall so verwenden kann, als wäre sie ein Teil seiner eigenen Infrastruktur. Dazu muss ein weiteres Unterverzeichnis mit dem Namen ''client\_configs" erstellt werden. Darin muss eine Datei angelegt werden, dass den gleichen Namen trägt wie das Clientzertifikat. In dieser Datei werden die Konfigurationsdaten für den Clienten geschrieben, wie in Auflistung \ref{lst:clientconf} zusehen ist.\newline
+Eine besondere Eigenschaft des Site-to-Site VPN's ist, dass man für jeden einzelnen Clienten eine besondere Konfiguration ''pushen'' kann. Dies bringt den Vorteil, dass, wie hier verwendet, ein Client die Infrastruktur hinter der Firewall so verwenden kann, als wäre sie ein Teil seiner eigenen Infrastruktur. Dazu muss ein weiteres Unterverzeichnis mit dem Namen ''client\_configs" erstellt werden. Darin muss eine Datei angelegt werden, das den gleichen Namen trägt wie das Clientzertifikat. In dieser Datei werden die Konfigurationsdaten für den Clienten geschrieben, wie in Auflistung \ref{lst:clientconf} zu sehen ist.\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
 	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
@@ -204,7 +207,7 @@ iroute 192.168.70.0 255.255.255.0
 iroute 192.168.80.0 255.255.255.0
 \end{lstlisting}
 \vspace{\baselineskip}
-Das ''iroute'' Statement gibt dem Client an welche IP-Adressen von ihm angesprochen werden können. \newline Nun muss als letztes die OpenVPN Konfigurationsdatei erstellt und angepasst werden. Dazu können die bei der Installation von OpenVPN mitgelieferten Beispieldateien verwendet werden und nach und nach an den Verwendungszweck angepasst werden. Für die Konfiguration für den Server wird die ''server.conf'' benötigt.\newline
+Das ''iroute'' Statement gibt dem Client an, welche IP-Adressen von ihm angesprochen werden können. \newline Nun muss als letztes die OpenVPN Konfigurationsdatei erstellt und angepasst werden. Dazu können die bei der Installation von OpenVPN mitgelieferten Beispieldateien verwendet werden und nach und nach an den Verwendungszweck angepasst werden. Für die Konfiguration für den Server wird die ''server.conf'' benötigt.\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
 	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
@@ -267,18 +270,18 @@ Die Auflistung \ref{lst:serverconf} zeigt die ''server.conf'' der Firma A. Dabei
 	\item[cert] Pfadangabe zum Serverzertifikat 
 	\item[key] Pfadangabe zum Privaten Schlüssel
 	\item[dh] Pfadangabe zum Diffi-Hellman Key 
-	\item[server] Spezifiziert den Server als Server und gibt den IP-Adress Raum des VPN Netzes an.	
-	\item[ifconfig-pool-persist] Datei in dem IP-Adressen der Clients gespeichert werden, um beim nächsten Verbinden von dem selben Client diesem die gleiche IP-Adresse zu geben. 
+	\item[server] Spezifiziert den Server als Server und gibt den IP-Adressen den Raum des VPN Netzes an.	
+	\item[ifconfig-pool-persist] Datei in dem IP-Adressen der Clients gespeichert werden, um beim nächsten Verbinden von des selben Client, diesem die gleiche IP-Adresse zu geben. 
 	\item[route] Definiert die hinter dem Client liegenden IP-Adressen auf die von Serverseite aus zugegriffen werden kann.
 	\item[push] IP-Adressraum der an den Client ''gepusht'' werden, die der Client annehmen darf. 
 	\item[client-config-dir] Pfadangabe zur Clientkonfiguration
-	\item[keepalive] Gibt an das nach 10 Sekunden inaktivität ein Ping an den Client gesendet wird, nach 120 Sekunden Inaktivität wird ein weiterer Versuch unternommen sich mit dem Client zu verbinden.
+	\item[keepalive] Gibt an, dass nach 10 Sekunden Inaktivität ein Ping an den Client gesendet wird, nach 120 Sekunden Inaktivität wird ein weiterer Versuch unternommen sich mit dem Client zu verbinden.
 	\item[cipher] Kryptographische Chiffre, über die die Verbindung zwischen Client und Server verschlüsselt wird. Dies muss beim Client der gleiche Chiffre sein.
 	\item[comp-lzo] Aktiviert die Kompression der Verbindung, dies muss auch beim Client aktiviert sein.
-	\item[user] Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nobody gesetzt, da zum starten eines VPN's Rootrechte benötigt und dies ist aber während der Sitzung nicht gewollt ist.
-	\item[group]Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nogroup gesetzt, da zum starten eines VPN's Rootrechte benötigt und dies ist aber während der Sitzung nicht gewollt ist.
+	\item[user] Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nobody gesetzt, da zum Starten eines VPN's Rootrechte benötigt werden. Dies ist aber während der Sitzung nicht gewollt.
+	\item[group]Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nogroup gesetzt, da zum Starten eines VPN's Rootrechte benötigt werden und dies aber während der Sitzung nicht gewollt ist.
 	\item[persist-key] Sichert vor einem Keepalive Neustart die Schlüssel, um diese nicht nochmals erzeugen zu müssen.
-	\item[persist-tun] Ähnlich wie persist-key nur für das tun-interface.  
+	\item[persist-tun] Ähnlich wie persist-key, nur für das tun-interface.  
 	\item[verb 3] Logging Optionen, über diese Einstellung kann die Genauigkeit des Loggens eingestellt werden.
 \end{description}
 
