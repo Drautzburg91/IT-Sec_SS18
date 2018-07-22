@@ -1,6 +1,6 @@
 % !TEX encoding = UTF-8 Unicode
 \section{Lösungsskizze}\label{loesungsskizze}
-In diesem Kapitel wird sich mit dem Thema befasst, wie sich eine Site-to-Site VPN Verbindung, die die Firmen A und B wie in Kapitel \ref{laborumgebung} beschrieben, verbindet.
+In diesem Kapitel wird sich mit dem Thema befasst, wie sich eine Site-to-Site VPN Verbindung, die die Firmen A und B, wie in Kapitel \ref{laborumgebung} beschrieben, verbindet.
 Dazu waren zu Beginn mehrere Vorüberlegungen zu tätigen. Dies sind zum einen: wie wird das innere Netz der Firmen A und B geschützt und zum anderen, welcher VPN Dienst für diesen Zweck verwendet werden kann und welche weiteren Strategien bei der Umsetzung der Security Policies der Firmen benötigt werden. 
 \subsection{Firewall}\label{firewallloesung}
 Wenn eine Firewall aufgebaut werden soll, muss zu Beginn überlegt werden, welche allgemeine Strategie mit der Firewall gefahren werden soll. Das heißt, sollen alle Verbindungen standardmäßig freigegeben werden und nur explizit nicht erlaubte Verbindungen geblockt werden (Default-Allow-Strategy), oder sollen alle Verbindungen blockiert werden und nur die die explizit erlaubt wurden, geöffnet werden (Default-Deny-Strategy). 
@@ -158,7 +158,8 @@ abgelegt werden. In der Auflistung \ref{lst:openssl}  werden die einzelnen Befeh
 openssl genrsa -out firma-A.key 2048
 
 #Request erstellen - CSR-Datei
-openssl req -new -key firma-A.key -config req.cnf -reqexts v3_req_srv -out CSR-firma-A.csr
+openssl req -new -key firma-A.key -config req.cnf 
+-reqexts v3_req_srv -out CSR-firma-A.csr
 \end{lstlisting}
 \vspace{\baselineskip}
 \begin{table}[h]
