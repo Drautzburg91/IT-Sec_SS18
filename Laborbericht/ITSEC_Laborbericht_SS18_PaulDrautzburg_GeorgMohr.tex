@@ -406,21 +406,21 @@ Damit wurden alle wichtigen Besonderheiten des Betriebssystem im Rahmen des Prak
 In diesem Kapitel werden die Möglichkeiten des Linux Pakets "IP-Tables" zur Filterung von Paketen beschrieben und eingeführt. Mit Hilfe dieses Pakets werden die für die Lösung erforderlichen Firewall-Skripte erstellt.  
 
 \subsubsection{Allgemein}
-Das Paket "IP-Tables" ist Standardmäßig in der Linux Installation enthalten. Es kann aber auch einfach über den Paketmanager mit Hilfe des Befehls "apt-get install iptables" installiert werden. In diesem Fall war das Paket schon installiert und musste nicht mehr manuell installiert werden. 
+Das Paket "IP-Tables" ist standardmäßig in der Linux Installation enthalten. Es kann aber auch einfach über den Paketmanager, mit Hilfe des Befehls "apt-get install iptables" installiert werden. In diesem Fall war das Paket schon installiert und musste nicht mehr manuell installiert werden. 
 
-Grundlegend stellt das IP-Tables einen Paketfilter dar, welches Pakete auf IP-Ebene auf Basis zuvor definierten Regeln filtert. Empfangene Pakete werden überprüft bevor sie weitergeleitet werden. Umgekehrt werden ausgehenden Pakete geprüft, bevor sie den Rechner verlassen. Es kann aber auch sein, dass der Rechner als Router fungiert, so müssen alle Pakete geprüft werden während diese weitergeleitet werden sollen. 
+Grundlegend stellt das IP-Table einen Paketfilter dar, welches Pakete auf IP-Ebene auf Basis zuvor definierter Regeln filtert. Empfangene Pakete werden überprüft, bevor sie weitergeleitet werden. Umgekehrt werden ausgehende Pakete geprüft, bevor sie den Rechner verlassen. Es kann aber auch sein, dass der Rechner als Router fungiert, so müssen alle Pakete geprüft werden, während diese weitergeleitet werden sollen. 
 \subsubsection{Funktionsweise}
-Die Paketprüfung wird dreistufig in einer Hierarchie durchgeführt. Die folgenden drei Stufen gibt es 
+Die Paketprüfung wird dreistufig in einer Hierarchie durchgeführt. Die folgenden drei Stufen gibt es:
 \begin{itemize}
 \item Tabellen,
 \item Chains (Ketten),
 \item Filterregeln.
 \end{itemize}
 
-Wird eine definierte Regel in einer Chain oder Tabelle gefunden wird die hinterlegte Aktion ausgeführt. Wenn keine Regel definiert wurde, wird eine allgemein definierte sog. Policy ausgeführt.
+Wird eine definierte Regel in einer Chain oder Tabelle gefunden, wird die hinterlegte Aktion ausgeführt. Wenn keine Regel definiert wurde, wird eine allgemein definierte sogenannte Policy ausgeführt.
 
 \subsubsection{Tabellen}
-In einer Tabellen werden die Filterregeln zu Gruppen zusammengefasst und nach der grundlegenden Aufgabe sortiert. Insgesamt gibt es vier Tabellen in denen eine Regel eingeordnet werden kann. In der folgenden Tabelle werden diese vier Tabellen und ihre Eigenschaften beschrieben\cite{iptables-1}. 
+In einer Tabelle werden die Filterregeln zu Gruppen zusammengefasst und nach der grundlegenden Aufgabe sortiert. Insgesamt gibt es vier Tabellen, in denen eine Regel eingeordnet werden kann. In der folgenden Tabelle werden diese vier Tabellen und ihre Eigenschaften beschrieben\cite{iptables-1}. 
 
 \begin{table}[!h]
 \centering
@@ -439,7 +439,7 @@ In einer Tabellen werden die Filterregeln zu Gruppen zusammengefasst und nach de
 \end{table}
  
 \subsubsection{Chains}
-In jeder Tabelle sind sog. "Chains" enthalten, welche festlegen wann ein Paket geprüft wird, bspw. bevor es verschickt werden soll. In der folgenden Tabelle werden alle fünf verschiedenen möglichen "Chains" beschrieben\cite{iptables-1}. 
+In jeder Tabelle sind sog. "Chains" enthalten, welche festlegen, wann ein Paket geprüft wird, bevor es, zum Beispiel, verschickt werden soll. In der folgenden Tabelle werden alle fünf verschiedenen möglichen "Chains" beschrieben\cite{iptables-1}. 
 
 \begin{table}[!h]
 \centering
@@ -459,7 +459,7 @@ In jeder Tabelle sind sog. "Chains" enthalten, welche festlegen wann ein Paket g
 \end{table}
 
 \subsubsection{Filterregeln}
-Sobald ein Paket auf eine Filterregel trifft muss definiert werden, wie mit dem Paket umgegangen werden soll. Dafür gibt es vier Optionen, welche am häufigsten Anwendung finden \cite{iptables-1}. Diese sind
+Sobald ein Paket auf eine Filterregel trifft, muss definiert werden, wie mit dem Paket umgegangen werden soll. Dafür gibt es vier Optionen, welche am häufigsten Anwendung finden \cite{iptables-1}. Diese sind:
 \begin{itemize}
 
 \item ACCEPT: Das Paket wird akzeptiert und angenommen,
@@ -473,7 +473,7 @@ Für dieses Laborpraktikum sind die beschriebenen vier Filterregeln ausreichend,
  
 \subsubsection{Policies}
 
-Da sich aus den beschriebenen Möglichkeiten eine große Anzahl an Möglichkeiten für Filteregeln für die einzelnen Pakete ergibt, gibt es sog. "Policies". Diese "Policies" setzen sich aus der Filterregel, der Chain und Aktion zusammen \cite{iptables-1}. Exemplarisch könnte ein Befehl für Input, Drop oder Forward wie folgt aussehen: 
+Da sich aus den beschriebenen Optionen eine große Anzahl an Möglichkeiten für Filteregeln für die einzelnen Pakete ergibt, gibt es sogenannte "Policies". Diese "Policies" setzen sich aus der Filterregel, der Chain und Aktion zusammen \cite{iptables-1}. Exemplarisch könnte ein Befehl für Input, Drop oder Forward, wie folgt aussehen: 
 \begin{lstlisting}[caption={Policies},label=lst:policy]
 iptables -P INPUT DROP
 iptables -P OUTPUT DROP
@@ -483,13 +483,13 @@ iptables -P FORWARD DROP
 Alle beschriebenen Möglichkeiten von IP-Tables wurden im Rahmen des Praktikums für die Lösung der Problemstellung eingesetzt. Dies ist jedoch nur ein Teil der Möglichkeiten von IP-Tables und spiegelt nicht den kompletten Funktionsumfang wieder. 
 Im folgenden Kapitel wird eine Einführung in die Grundlagen einer Public Key Infrastructure gegeben, wie sie auch für das Praktikum benötigt wird.
 \subsection{Public Key Infrastructure}\label{PKI}
-Eine Public Key Infrastructure ist ein System anhand dessen digitale Zertifikate ausgestellt, geprüft und verteilt werden können. Diese ausgestellten Zertifikate werden dann für die sichere Kommunikation zwischen Netzwerkteilnehmern genutzt.
+Eine Public Key Infrastructure ist ein System, anhand dessen digitale Zertifikate ausgestellt, geprüft und verteilt werden können. Diese ausgestellten Zertifikate werden dann für die sichere Kommunikation zwischen Netzwerkteilnehmern genutzt.
 \subsubsection{Aufbau einer PKI}
 Eine PKI besteht grundsätzlich aus folgenden Bestandteilen
 
 \begin{quotation}
 \item [\textbf{Digitale Zertifikate:}]
-Mit Hilfe der digitalen Zertifikate wird die Echtheit eines Objekts sichergestellt, zudem kann die Authentizität und Integrität mit Hilfe von kryptographischen Verfahren nachgeprüft werden. Ein Zertifikat enthält die Schlüssel, welche zur Authentifizierung und Ver- und Entschlüsselung der zu übertragenden Daten, sorgen. Die Ausstellung eines digitalen Zertifikats erfolgt durch die Zertifizierungsstelle (CA)
+Mit Hilfe der digitalen Zertifikate wird die Echtheit eines Objekts sichergestellt, zudem kann die Authentizität und Integrität mit Hilfe von kryptographischen Verfahren nachgeprüft werden. Ein Zertifikat enthält die Schlüssel, welche zur Authentifizierung und Ver- und Entschlüsselung der zu übertragenden Daten sorgen. Die Ausstellung eines digitalen Zertifikats erfolgt durch die Zertifizierungsstelle (CA)
 \item [\textbf{Zertifizierungsstelle (CA):}]Eine Zertifizierungsstelle (CA), bildet den Kern einer PKI. Sie ist für das Herausgeben der Zertifikate verantwortlich und trägt die Verantwortung für die Integrität dieser. 
 \item [\textbf{Registrierungsstelle (RA):}]Eine Registrierungsstelle (RA), ist eine Organisation bei der Zertifikate beantragt werden können. Dies können Personen, Maschinen oder auch untergeordnete Zertifizierungsstellen sein. Die RA prüft den Zertifizierungsantrag und nach erfolgreicher Prüfung, kann dieses dann durch die Zertifizierungsstelle signiert werden. 
 \item [\textbf{Zertifikatssperrliste (CRL):}] Eine Zertifikatssperrliste(CRL), enthält alle Zertifikate, welche vor ihrem eigentlich Ablaufdatum ungültig geworden sind. Dies kann bspw. durch einen geknackten Algorithmus bei einem der Schlüssel passieren. 
@@ -510,7 +510,7 @@ Der Ablauf für die Erstellung eines Server-Zertifikats besteht aus insgesamt se
 \item Diese crt-Datei, welche nun heruntergeladen werden kann, kann nun einfach für die Sicherung der Netzwerkkomponenten genutzt werden, bspw. für den VPN-Client oder VPN-Server\cite{JueNeuSaDue}.  
 \end{enumerate}
 
-Für die Lösung der Aufgabenstellung muss dieser Vorgang insgesamt zwei Mal durchgeführt werden, da für Client und Server ein solches Server-Zertifikat benötigt wird. Zu beachten ist auch, dass die Software OpenSSL zwingend, für die Erstellung des privaten Schlüssels, installiert sein muss.
+Für die Lösung der Aufgabenstellung muss dieser Vorgang insgesamt zwei Mal durchgeführt werden, da für Client und Server ein solches Server-Zertifikat benötigt wird. Zu beachten ist auch, dass die Software OpenSSL zwingend für die Erstellung des privaten Schlüssels, installiert sein muss.
 
 Der Gesamtprozess zur Erstellung eines Server-Zertifikats wird in Abbildung \ref{fig:Zertifikaserstellung} nochmals verdeutlicht.  
 \begin{figure}[!h]
@@ -526,7 +526,7 @@ Im folgenden Abschnitt wird, die für die Umsetzung der VPN-Verbindung benötigt
 Für die Lösung der Problemstellung wurde die Software OpenVPN genutzt, da sie den Anforderungen an die Aufgabenstellung entspricht. Da OpenVPN zwingend die Software OpenSSL voraussetzt und diese ohnehin für die Erstellung der privaten Schlüssel genutzt wird, war die Wahl schnell getroffen\cite{openV-1}. 
 
 \subsubsection{Grundlagen}
-OpenVPN ist eine frei verfügbare Software für die Einrichtung eines virtuellen Netzwerks über eine verschlüsselte TLS/SSL-Verbindungen. Wie bereits angesprochen, erfolgt die Verschlüsselung mit Hilfe von OpenSSL. Es kann wahlweise UPD oder TCP als Transportprotokoll eingesetzt werden. Zur Authentifizierung bietet OpenVPN das sog. Pre-shared Key Verfahren oder eine Authentifizierung über Zertifikate, welches im Rahmen des Praktikums auch eingesetzt wurde\cite{openV-1}. 
+OpenVPN ist eine frei verfügbare Software für die Einrichtung eines virtuellen Netzwerks, über eine verschlüsselte TLS/SSL-Verbindungen. Wie bereits angesprochen, erfolgt die Verschlüsselung mit Hilfe von OpenSSL. Es kann wahlweise UPD oder TCP als Transportprotokoll eingesetzt werden. Zur Authentifizierung bietet OpenVPN das sogenannte Pre-shared Key Verfahren oder eine Authentifizierung über Zertifikate, welches im Rahmen des Praktikums auch eingesetzt wurde\cite{openV-1}. 
 
 OpenVPN bietet grundlegend folgende Eigenschaften:
 
@@ -538,19 +538,19 @@ OpenVPN bietet grundlegend folgende Eigenschaften:
 \end{itemize}
 
 \subsubsection{Authentifizierung}
-Wie schon angesprochen verfügt OpenVPN über zwei verschiedene Methoden zur Authentifizierung, folgend werden beide gegenüberstellt. 
+Wie schon angesprochen, verfügt OpenVPN über zwei verschiedene Methoden zur Authentifizierung, folgend werden beide gegenüberstellt. 
 
 \begin{quotation}
 \item[\textbf{Pre-shared Key:}]
 ist ein symmetrisches Verfahren, der Schlüssel wird im VPN-Server erstellt und an die Clients verteilt. Es handelt sich um ein sehr einfaches Verfahren. Jedoch ist es nicht sehr sicher, da es nur einen Schlüssel gibt und falls dieser korrumpiert werden sollte, müssten sämtliche Kommunikationsteilnehmer neue Schlüssel erhalten und wären potentiell in Gefahr\cite{openV-1}. 
 
 \item[\textbf{Zertifikatsbasiert:}]
-ist ein auf dem TLS-Protokoll basierendes Verfahren, welches aktuell als sehr sicher klassifiziert wird. Dieses Verfahren beruht auf privaten und öffentlichen Schlüsselpaaren. Der Server und der Client erhalten jeweils ein öffentliches und privates Zertifikat. Mit Hilfe von easy-rsa könnten auch sehr einfach die benötigen Zertifikate erstellt werden. Diese Aufgabe wird jedoch im Praktikum durch die PKI übernommen. Allgemein ist dieses Verfahren sicherer als das Pre-shard Key, es bring aber auch eine höhere Komplexität bei der Umsetzung mit\cite{openV-1}. 
+ist ein auf dem TLS-Protokoll basierendes Verfahren, welches aktuell als sehr sicher klassifiziert wird. Dieses Verfahren beruht auf privaten und öffentlichen Schlüsselpaaren. Der Server und der Client erhalten jeweils ein öffentliches und privates Zertifikat. Mit Hilfe von easy-rsa könnten auch sehr einfach die benötigen Zertifikate erstellt werden. Diese Aufgabe wird jedoch im Praktikum durch die PKI übernommen. Allgemein ist dieses Verfahren sicherer als das Pre-shard Key, es bringt aber auch eine höhere Komplexität bei der Umsetzung mit sich\cite{openV-1}. 
 \end{quotation} 
 
 \subsubsection{Kommunikation}
 
-Mittels OpenVPN kann entweder eine Client-Server Verbindung aufgebaut werden, auch Roadwarrior genannt. Oder, wie in der Aufgabenstellung gefordert, eine Site-to-Site Verbindung. Im Standard wird die Kommunikation über das zustandslose UDP-Protokoll abgewickelt. Diese kann jedoch auch auf das TCP-Protokoll umgestellt werden\cite{openV-1}. 
+Mittels OpenVPN kann entweder eine Client-Server Verbindung aufgebaut werden, auch Roadwarrior genannt, oder, wie in der Aufgabenstellung gefordert, eine Site-to-Site Verbindung. Im Standard wird die Kommunikation über das zustandslose UDP-Protokoll abgewickelt. Diese kann jedoch auch auf das TCP-Protokoll umgestellt werden\cite{openV-1}. 
 
 Zudem bietet OpenVPN auch verschiedene Netzwerkmodi an Bridging-Mode (Tap-Device) und Routing-Mode (Tun-Device). 
 Diese zwei Modi werden folgend gegenübergestellt. 
@@ -581,18 +581,18 @@ In der folgenden Tabelle \ref{my-Tun/Tap} werden abschließend für dieses Kapit
 
 Für die Lösung der Aufgabe wurde der Routing-Mode (Tun-Device) eingesetzt. 
 
-Mit Abschluss dieses Kapitel wurden alle theoretischen Grundlagen, welche für den Rahmen des Laborpraktikums relevant sind, eingeführt. Im anschließenden Kapitel wird die Lösungskizze für die Problemstellung beschrieben. 
+Mit Abschluss dieses Kapitel wurden alle theoretischen Grundlagen, welche für den Rahmen des Laborpraktikums relevant sind, eingeführt. Im anschließenden Kapitel wird die Lösungsskizze für die Problemstellung beschrieben. 
  
 \include{chapters/loesungsskizze}\label{Lösungsskizze}
 \include{chapters/Auswertung}\label{Auswertung}
 \section{Fazit}\label{Fazit}
-Trotz der nicht Aufklärung des Fehlers in der konfigurierten Lösung konnten einige sehr wichtige Erkenntnisse aus diesem Praktikum gewonnen werden. Der Bereich der Netzwerkarchitektur in Verbindung mit den vielen Sicherheitsaspekten wird im heutigen Zeitalter immer entscheidender. Fast jeder Mitarbeiter in eines globalen Unternehmens nutzt fast täglich die Möglichkeiten einer sicheren VPN-Verbindung, ohne sich darüber im klaren zu sein, was für eine Komplexität bei der Bereitstellung einer solchen Verbindung überwunden werden muss. 
+Trotz der nicht gefundenen Aufklärung des Fehlers in der konfigurierten Lösung, konnten einige sehr wichtige Erkenntnisse aus diesem Praktikum gewonnen werden. Der Bereich der Netzwerkarchitektur, in Verbindung mit den vielen Sicherheitsaspekten, wird im heutigen Zeitalter immer entscheidender. Fast jeder Mitarbeiter eines globalen Unternehmens nutzt meist täglich die Möglichkeiten einer sicheren VPN-Verbindung, ohne sich darüber im Klaren zu sein, welche Komplexität bei der Bereitstellung einer solchen Verbindung überwunden werden muss. 
 
-Nach der Absolvierung des Laborpraktikums wurden viele Aspekte, welche vorher einfach hingenommen wurden, kritisch und fachlich beleuchtet. Das Einrichten einer VPN-Verbindung mit den dazugehörigen Zertifikate, sowie die Konfiguration der internen Firewalls, hat mal wieder die Annahme bestätigt, dass es bei der Konfiguration von Netzwerken auf der Basis von Linux auf jede Kleinigkeit ankommt. So führt eine Leerzeile in einem Skript dazu, dass ein komplettes System nicht mehr so reagiert wie es sollte. Die Schwierigkeit solch einen Fehler zu finden ist, wie das Suchen der Nadeln [...]. Zudem gestaltet sich die Fehlersuche in einem Netzwerk deutlich komplizierter, als bspw. in der Anwendungsentwicklung. Bei der Anwendungsentwicklung kann durch Einsatz einer IDE und dem darin enthaltenen Debugger relativ schnell auf einen Fehler geschlossen werden. Da bei der Fehlersuche eher die Gewohnheiten aus der Anwendungsentwicklung zu Grunde lagen, brauchte es etwas Zeit bis es Möglich war, in dieser Domäne eine effektive und erfolgreiche Fehlersuche durchzuführen. 
+Nach der Absolvierung des Laborpraktikums wurden viele Aspekte, welche vorher einfach hingenommen wurden, kritisch und fachlich beleuchtet. Das Einrichten einer VPN-Verbindung mit den dazugehörigen Zertifikate, sowie die Konfiguration der internen Firewalls, bestätigt  die Annahme , dass es bei der Konfiguration von Netzwerken, auf der Basis von Linux, auf jede Kleinigkeit ankommt. So führt eine Leerzeile in einem Skript dazu, dass ein komplettes System nicht mehr so reagiert, wie es sollte. Die Schwierigkeit solch einen Fehler zu finden ist, wie das Suchen der Nadel im Heuhaufen. Zudem gestaltet sich die Fehlersuche in einem Netzwerk deutlich komplizierter, als beispielsweise in der Anwendungsentwicklung. Bei der Anwendungsentwicklung kann durch Einsatz einer IDE und dem darin enthaltenen Debugger relativ schnell auf einen Fehler geschlossen werden. Da bei der Fehlersuche eher die Gewohnheiten aus der Anwendungsentwicklung zu Grunde lagen, brauchte es etwas Zeit bis es möglich war, in dieser Domäne eine effektive und erfolgreiche Fehlersuche durchzuführen. 
 
-Der Punkt der Fehlersuche war auch der, mit dem der größte Zeitaufwand verbunden war. Die rein logische Umsetzung der Problemstellung war relativ schnell erledigt. Auch das parallele Aufsetzen mehrerer Systeme mit dem Lösungsansatz führte immer zum gleichen Fehlerfall, wie in der Auswertung bereits beschrieben. Selbst die intensive Hilfe der Laborassistenz konnte den Fehler nicht aufklären. Da es bei der Laborumgebung um eine virtualisierte Umgebung handelte, liegt die Vermutung nahe, dass der Fehler in der Konfiguration der virtuellen Umgebung zu finden sein könnte. Dies bleibt jedoch nur eine reine Vermutungen und konnte nicht mit Fakten belegt werden. 
+Der Punkt der Fehlersuche war auch der, mit dem der größte Zeitaufwand verbunden war. Die rein logische Umsetzung der Problemstellung war relativ schnell erledigt. Auch das parallele Aufsetzen mehrerer Systeme mit dem Lösungsansatz, führte immer zum gleichen Fehlerfall, wie in der Auswertung bereits beschrieben. Selbst die intensive Hilfe der Laborassistenz konnte den Fehler nicht aufklären. Da es bei der Laborumgebung um eine virtualisierte Umgebung handelte, liegt die Vermutung nahe, dass der Fehler in der Konfiguration der virtuellen Umgebung zu finden sein könnte. Dies bleibt jedoch nur eine reine Vermutungen und konnte nicht mit Fakten belegt werden. 
 
-Es bleibt jedoch festzuhalten, dass es die Lernkurve im Rahmen des Praktikums sehr steil war. Die Bereiche der Netzwerkarchitekturen bis hin zur Erstellung eines Server-Zertifikats sind aktuell eine sehr wichtige Domäne in der Informatik. 
+Es bleibt jedoch festzuhalten, dass die Lernkurve im Rahmen des Praktikums sehr steil war. Die Bereiche der Netzwerkarchitekturen bis hin zur Erstellung eines Server-Zertifikats sind aktuell eine sehr wichtige Domäne in der Informatik. 
 
 %%%
 %%% end main document
