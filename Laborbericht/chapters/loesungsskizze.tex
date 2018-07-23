@@ -1,11 +1,11 @@
 % !TEX encoding = UTF-8 Unicode
 \section{Lösungsskizze}\label{loesungsskizze}
 In diesem Kapitel wird sich mit dem Thema befasst, wie sich eine Site-to-Site VPN Verbindung, die die Firmen A und B, wie in Kapitel \ref{laborumgebung} beschrieben, verbindet.
-Dazu waren zu Beginn mehrere Vorüberlegungen zu tätigen. Dies sind zum einen: wie wird das innere Netz der Firmen A und B geschützt und zum anderen, welcher VPN Dienst für diesen Zweck verwendet werden kann und welche weiteren Strategien bei der Umsetzung der Security Policies der Firmen benötigt werden. 
+Dazu waren zu Beginn mehrere Vorüberlegungen zu tätigen. Dies sind zum einen, wie wird das innere Netz der Firmen A und B geschützt und zum anderen, welcher VPN Dienst für diesen Zweck verwendet werden kann und welche weiteren Strategien bei der Umsetzung der Security Policies der Firmen benötigt werden. 
 \subsection{Firewall}\label{firewallloesung}
 Wenn eine Firewall aufgebaut werden soll, muss zu Beginn überlegt werden, welche allgemeine Strategie mit der Firewall gefahren werden soll. Das heißt, sollen alle Verbindungen standardmäßig freigegeben werden und nur explizit nicht erlaubte Verbindungen geblockt werden (Default-Allow-Strategy), oder sollen alle Verbindungen blockiert werden und nur die die explizit erlaubt wurden, geöffnet werden (Default-Deny-Strategy). 
 
-Im Standardfall wird in Unternehmen die Strategie Default-Deny verwendet, weshalb auch im Versuchsaufbau diese Strategie gewählt wurde. Eine Firewall wird mit Hilfe des Userspace-Programmes IPTABLES (siehe Kapitel \ref{iptables}) unter Linux realisiert. Dafür wird eine Rules Datei (nachfolgend Skript genannt) angelegt.Iin dieser werden die Einstellungen und Regeln für die Firewall definiert. Zu Beginn des Skriptes wird der Interpreter für den Code angegeben. Dann wird begonnen, die durch die Default Strategie vorgegebenen Default Policies umzusetzen (siehe Auflistung \ref{lst:defaultPolicy}). Dabei sagt das -P, dass die Policy angesprochen werden soll, das INPUT, OUTPUT und FORWARD bezieht sich auf die im Kapitel \ref{iptables} vorgestellten Chains. DROP sagt dabei aus, dass die eintreffenden Pakete, wenn keine weiteren Regeln definiert oder zutreffen nicht weitergeleitet und "fallengelassen'' werden sollen.
+Im Standardfall wird in Unternehmen die Strategie Default-Deny verwendet, weshalb auch im Versuchsaufbau diese Strategie gewählt wurde. Eine Firewall wird mit Hilfe des Userspace-Programmes IP-Tables (siehe Kapitel \ref{iptables}) unter Linux realisiert. Dafür wird eine Rules Datei (nachfolgend Skript genannt) angelegt. In dieser werden die Einstellungen und Regeln für die Firewall definiert. Zu Beginn des Skriptes wird der Interpreter für den Code angegeben. Dann wird begonnen, die durch die Default Strategie vorgegebenen Default Policies umzusetzen (siehe Auflistung \ref{lst:defaultPolicy}). Dabei sagt das -P, dass die Policy angesprochen werden soll, das INPUT, OUTPUT und FORWARD bezieht sich auf die im Kapitel \ref{iptables} vorgestellten Chains. DROP sagt dabei aus, dass die eintreffenden Pakete, wenn keine weiteren Regeln definiert oder zutreffen, nicht weitergeleitet und "fallengelassen" werden sollen.
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -54,27 +54,27 @@ Dabei sagt das ''-A'' aus, an welche Chain diese Regel angehängt werden soll. D
 -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 \end{lstlisting}
 \vspace{\baselineskip}
-Die, in der Auflistung \ref{lst:allgemeineRegeln} dargestellten Regeln, sind allgemeine Regeln für die Firewall. Diese erlauben das Empfangen von Pinganfragen, den Fernzugriff mittels SSH, alle neuen Verbindungen von innen nach außen und alle bereits aufgebauten Verbindungen, beziehungsweise alle Verbindungen, die einen Bezug auf eine andere Verbindung besitzen. In der nachfolgenden Tabelle \ref*{tab:iptablesOptionen} werden die hier verwendeten Optionen nochmals näher beschrieben.
+Die, in der Auflistung \ref{lst:allgemeineRegeln} dargestellten Regeln, sind allgemeine Regeln für die Firewall. Diese erlauben das Empfangen von Pinganfragen, den Fernzugriff mittels "secure shell" (SSH), alle neuen Verbindungen von innen nach außen und alle bereits aufgebauten Verbindungen, beziehungsweise alle Verbindungen, die einen Bezug auf eine andere Verbindung besitzen. In der nachfolgenden Tabelle \ref*{tab:iptablesOptionen} werden die hier verwendeten Optionen nochmals näher beschrieben.
 \begin{table}[h]
 	\centering
 \begin{tabular}{|p{2cm}|p{13cm}|}
 	\hline 
 	Optionen & Beschreibung \\ 
 	\hline 
-	-p & Gibt das Protokoll an welches verwendet werden soll hier icmp(Ping), tcp \\ 
+	-p & Gibt das Protokoll an welches verwendet werden soll, hier icmp und tcp. \\ 
 	\hline 
-	-dport & Gibt den Destinationport an, auf den zugegriffen werden soll hier 22 \\ 
+	-dport & Gibt den Destination-Port an, auf den zugegriffen werden soll, hier 22. \\ 
 	\hline
-	eth0,eth1 & bezieht sich auf das verwendete Netzwerkinterface \\ 
+	eth0,eth1 & Bezieht sich auf das verwendete Netzwerkinterface. \\ 
 	\hline 
-	-m state & die entreffenden Pakete sollen auf den Status überprüft werden \\ 
+	-m state & Die eintreffenden Pakete sollen auf den Status überprüft werden. \\ 
 	\hline 
-	--state & Status der eintreffenden Pakete, hier NEW, RELATED,ESTABLISHED \\ 
+	--state & Status der eintreffenden Pakete, hier NEW, RELATED,ESTABLISHED. \\ 
 	\hline 
 \end{tabular} 
 \caption{IPTABLES Optionen und Beschreibung} \label{tab:iptablesOptionen}
 \end{table}
-Nach den allgemeine Regeln müssen nun die VPN spezifischen Regeln definiert werden. Dazu muss man die auf den VPN Ports eintreffenden und ausgehenden Pakete betrachten. Diese Ports sind entweder 1194 oder 1195. In der Auflistung \ref{lst:VPNRegeln} sind VPN Regeln zusehen. Eine Besonderheit bei VPN ist, das zum einen alle Verbindungen, die über das Netzwerkinterface tun0 eintreffenden Pakete ohne Überprüfung an das Inteface eth0 übergeben werden. Des weiteren wird noch die Tabelle NAT benötigt, was das ''*nat'' angibt. In dieser Tabelle gibt es die Chain POSTROUTING. Über diese kann nachträglich der Verkehrsheader eines Paketes verändert werden. MASQUERADE hat dabei die Funktion, dass wenn ein Paket versendet wird, die Source-IP-Adresse so verändert wird, dass nur noch die IP-Adresse des Firewallservers ersichtlich ist. Dies hat den Grund, dass von außen nicht ersichtlich wird, welche IP-Adressen sich hinter der Firewall befinden und es so Angreifern erschwert wird, diese anzugreifen.
+Nach den allgemeinen Regeln müssen nun die VPN spezifischen Regeln definiert werden. Dazu muss man die auf den VPN-Ports eintreffenden und ausgehenden Pakete betrachten. Diese Ports sind entweder 1194 oder 1195. In der Auflistung \ref{lst:VPNRegeln} werden die VPN Regeln aufgelistet. Eine Besonderheit bei VPN ist, das zum einen alle Verbindungen, die über das Netzwerkinterface tun0 eintreffenden Pakete ohne Überprüfung an das Inteface eth0 übergeben werden. Zum anderen wird noch die Tabelle NAT benötigt, welche das ''*nat'' angibt. In dieser Tabelle gibt es die Chain POSTROUTING. Über diese kann nachträglich der Verkehrsheader eines Paketes verändert werden. MASQUERADE hat dabei die Funktion, dass wenn ein Paket versendet wird, die Source-IP-Adresse so verändert wird, dass nur noch die IP-Adresse des Firewallservers ersichtlich ist. Dies hat den Grund, dass von außen nicht ersichtlich wird, welche IP-Adressen sich hinter der Firewall befinden und es so Angreifern erschwert wird, diese anzugreifen.
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -105,7 +105,7 @@ COMMIT
 COMMIT
 \end{lstlisting}
 \vspace{\baselineskip}
-Nach dem Erstellen des Skriptes, muss dieses nun eingespielt werden. Dazu wird der Befehl ''iptables-restore'' verwendet. Dieser wird exemplarisch in der Auflistung \ref{lst:fwrestorea} veranschaulicht, dabei liegt das Skript im Ordner ''etc''.
+Nach dem Erstellen des Skriptes muss dieses nun eingespielt werden. Dazu wird der Befehl ''iptables-restore'' verwendet. Dieser wird exemplarisch in der Auflistung \ref{lst:fwrestorea} veranschaulicht. Dabei liegt das Skript im Ordner ''etc''.
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -115,7 +115,7 @@ Nach dem Erstellen des Skriptes, muss dieses nun eingespielt werden. Dazu wird d
 iptable-restore < etc/iptables.firewall-a.rules
 \end{lstlisting}
 \vspace{\baselineskip}
-Nach dem das Skript eingespielt wurde, muss dieses noch so konfiguriert werden, sodass es nach einem Serverneustart automatisch neu eingespielt wird. Dazu könne zwei Arten verwendet werden. Zum einen mit Hilfe des ''if-pre-up.d'' Directories. Dabei wird eine neue Datei angelegt mit dem Namen ''iptables''. In der Auflistung \ref{lst:neustart} wird der Inhalt, der neu angelegten Datei gezeigt. Nun muss die Datei noch ausführbar gemacht werden, dies geschieht mit Hilfe des Befehls ''chmod +x''
+Nach dem das Skript eingespielt wurde, muss dieses noch so konfiguriert werden, sodass es nach einem Serverneustart automatisch neu eingespielt wird. Dazu könne zwei Arten verwendet werden. Zum einen mit Hilfe des ''if-pre-up.d'' Directories, dabei wird eine neue Datei angelegt mit dem Namen ''iptables''. In der Auflistung \ref{lst:neustart} wird der Inhalt, der neu angelegten Datei gezeigt. Nun muss die Datei noch ausführbar gemacht werden, dies geschieht mit Hilfe des Befehls ''chmod +x''.
 \newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
@@ -126,7 +126,7 @@ Nach dem das Skript eingespielt wurde, muss dieses noch so konfiguriert werden, 
 /sbin/iptasbles-restore < /etc/iptables.fwirewall-a.rules
 \end{lstlisting}
 \vspace{\baselineskip}
-Die zweite Möglichkeit des automatischen Neuladens der Firewall, ist mit Hilfe des Tools ''iptables-peristent''. Dieses Tool muss mit ''aptitute'' installiert werden. Nach dem das Tool installiert wurde, können mit dem Befehl ''iptables-save > /etc/iptables/rules.v4'' die Regeln für jeden Neustart automatisch geladen werden. 
+Zum anderen die Möglichkeit des automatischen Neuladens der Firewall, ist mit Hilfe des Tools ''iptables-peristent''. Dieses Tool muss mit ''aptitute'' installiert werden. Nach dem das Tool installiert wurde, können mit dem Befehl ''iptables-save > /etc/iptables/rules.v4'' die Regeln für jeden Neustart automatisch geladen werden. 
 \newline 
 Eine weitere Konfiguration die vorgenommen werden muss, ist das Akzeptieren des Forwardings. Dazu muss im Verzeichnis ''/proc'' die Datei ''/proc/sys/net/ipv4/ip\_forward'' die Zeile in der Auflistung \ref{lst:forward} eingefügt werden. Zu Beginn steht in dieser Datei lediglich eine ''0'' diese muss ersetzt werden durch eine ''1'' dies aktiviert das Forwarding.\newline
 \lstset{
