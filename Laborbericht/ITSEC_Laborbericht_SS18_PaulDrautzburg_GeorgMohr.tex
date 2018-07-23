@@ -408,7 +408,7 @@ In diesem Kapitel werden die Möglichkeiten des Linux Pakets "IP-Tables" zur Fil
 \subsubsection{Allgemein}
 Das Paket "IP-Tables" ist standardmäßig in der Linux Installation enthalten. Es kann aber auch einfach über den Paketmanager, mit Hilfe des Befehls "apt-get install iptables" installiert werden. In diesem Fall war das Paket schon installiert und musste nicht mehr manuell installiert werden. 
 
-Grundlegend stellt das IP-Table einen Paketfilter dar, welches Pakete auf IP-Ebene auf Basis zuvor definierter Regeln filtert. Empfangene Pakete werden überprüft, bevor sie weitergeleitet werden. Umgekehrt werden ausgehende Pakete geprüft, bevor sie den Rechner verlassen. Es kann aber auch sein, dass der Rechner als Router fungiert, so müssen alle Pakete geprüft werden, während diese weitergeleitet werden sollen. 
+Grundlegend stellt IP-Tables einen Paketfilter dar, welcher Pakete auf IP-Ebene auf Basis zuvor definierter Regeln filtert. Die empfangenen Pakete werden überprüft, bevor sie weitergeleitet werden. Umgekehrt werden ausgehende Pakete geprüft, bevor sie den Rechner verlassen. Es kann aber auch sein, dass der Rechner als Router fungiert, so müssen alle Pakete geprüft werden, während diese weitergeleitet werden sollen. 
 \subsubsection{Funktionsweise}
 Die Paketprüfung wird dreistufig in einer Hierarchie durchgeführt. Die folgenden drei Stufen gibt es:
 \begin{itemize}
@@ -417,7 +417,7 @@ Die Paketprüfung wird dreistufig in einer Hierarchie durchgeführt. Die folgend
 \item Filterregeln.
 \end{itemize}
 
-Wird eine definierte Regel in einer Chain oder Tabelle gefunden, wird die hinterlegte Aktion ausgeführt. Wenn keine Regel definiert wurde, wird eine allgemein definierte sogenannte Policy ausgeführt.
+Wird eine definierte Regel in einer Chain oder Tabelle gefunden, wird die hinterlegte Aktion ausgeführt. Wenn keine Regel definiert wurde, wird eine allgemein definierte Regel, eine sogenannte Policy, ausgeführt.
 
 \subsubsection{Tabellen}
 In einer Tabelle werden die Filterregeln zu Gruppen zusammengefasst und nach der grundlegenden Aufgabe sortiert. Insgesamt gibt es vier Tabellen, in denen eine Regel eingeordnet werden kann. In der folgenden Tabelle werden diese vier Tabellen und ihre Eigenschaften beschrieben (vgl.\cite{iptables-1}). 
@@ -439,7 +439,7 @@ In einer Tabelle werden die Filterregeln zu Gruppen zusammengefasst und nach der
 \end{table}
  
 \subsubsection{Chains}
-In jeder Tabelle sind sog. "Chains" enthalten, welche festlegen, wann ein Paket geprüft wird, bevor es, zum Beispiel, verschickt werden soll. In der folgenden Tabelle werden alle fünf verschiedenen möglichen "Chains" beschrieben (vgl.\cite{iptables-1}). 
+In jeder Tabelle sind sogenannte "Chains" enthalten, welche festlegen, wann ein Paket geprüft wird, bevor es zum Beispiel verschickt werden soll. In der folgenden Tabelle werden alle fünf verschiedenen möglichen "Chains" beschrieben (vgl.\cite{iptables-1}). 
 
 \begin{table}[!h]
 \centering
@@ -459,7 +459,7 @@ In jeder Tabelle sind sog. "Chains" enthalten, welche festlegen, wann ein Paket 
 \end{table}
 
 \subsubsection{Filterregeln}
-Sobald ein Paket auf eine Filterregel trifft, muss definiert werden, wie mit dem Paket umgegangen werden soll. Dafür gibt es vier Optionen, welche am häufigsten Anwendung finden \cite{iptables-1}. Diese sind:
+Sobald ein Paket auf eine Filterregel trifft, muss definiert werden, wie mit dem Paket umgegangen werden soll. Dafür gibt es vier Optionen, welche am häufigsten Anwendung finden (vgl.\cite{iptables-1}). Diese sind:
 \begin{itemize}
 
 \item ACCEPT: Das Paket wird akzeptiert und angenommen,
@@ -473,44 +473,44 @@ Für dieses Laborpraktikum sind die beschriebenen vier Filterregeln ausreichend,
  
 \subsubsection{Policies}
 
-Da sich aus den beschriebenen Optionen eine große Anzahl an Möglichkeiten für Filteregeln für die einzelnen Pakete ergibt, gibt es sogenannte "Policies". Diese "Policies" setzen sich aus der Filterregel, der Chain und Aktion zusammen \cite{iptables-1}. Exemplarisch könnte ein Befehl für Input, Drop oder Forward, wie folgt aussehen: 
+Da sich aus den beschriebenen Optionen eine große Anzahl an Möglichkeiten für Filteregeln für die einzelnen Pakete ergibt, sogenannte "Policies". Diese "Policies" setzen sich aus der Filterregel, der Chain und Aktion zusammen (vgl.\cite{iptables-1}). Exemplarisch könnte ein Befehl für Input, Drop oder Forward, wie folgt aussehen: 
 \begin{lstlisting}[caption={Policies},label=lst:policy]
 iptables -P INPUT DROP
 iptables -P OUTPUT DROP
 iptables -P FORWARD DROP
 \end{lstlisting}
 
-Alle beschriebenen Möglichkeiten von IP-Tables wurden im Rahmen des Praktikums für die Lösung der Problemstellung eingesetzt. Dies ist jedoch nur ein Teil der Möglichkeiten von IP-Tables und spiegelt nicht den kompletten Funktionsumfang wieder. 
+Alle beschriebenen Möglichkeiten von IP-Tables wurden im Rahmen des Praktikums für die Lösung der Problemstellung eingesetzt. Dies ist jedoch nur ein Teil der Möglichkeiten von IP-Tables und spiegelt nicht den kompletten Funktionsumfang wider. 
 Im folgenden Kapitel wird eine Einführung in die Grundlagen einer Public Key Infrastructure gegeben, wie sie auch für das Praktikum benötigt wird.
 \subsection{Public Key Infrastructure}\label{PKI}
-Eine Public Key Infrastructure ist ein System, anhand dessen digitale Zertifikate ausgestellt, geprüft und verteilt werden können. Diese ausgestellten Zertifikate werden dann für die sichere Kommunikation zwischen Netzwerkteilnehmern genutzt.
+Eine Public Key Infrastructure (PKI) ist ein System, anhand dem digitale Zertifikate ausgestellt, geprüft und verteilt werden können. Diese ausgestellten Zertifikate werden dann für die sichere Kommunikation zwischen Netzwerkteilnehmern genutzt.
 \subsubsection{Aufbau einer PKI}
 Eine PKI besteht grundsätzlich aus folgenden Bestandteilen
 
 \begin{quotation}
 \item [\textbf{Digitale Zertifikate:}]
-Mit Hilfe der digitalen Zertifikate wird die Echtheit eines Objekts sichergestellt, zudem kann die Authentizität und Integrität mit Hilfe von kryptographischen Verfahren nachgeprüft werden. Ein Zertifikat enthält die Schlüssel, welche zur Authentifizierung und Ver- und Entschlüsselung der zu übertragenden Daten sorgen. Die Ausstellung eines digitalen Zertifikats erfolgt durch die Zertifizierungsstelle (CA)
-\item [\textbf{Zertifizierungsstelle (CA):}]Eine Zertifizierungsstelle (CA), bildet den Kern einer PKI. Sie ist für das Herausgeben der Zertifikate verantwortlich und trägt die Verantwortung für die Integrität dieser. 
-\item [\textbf{Registrierungsstelle (RA):}]Eine Registrierungsstelle (RA), ist eine Organisation bei der Zertifikate beantragt werden können. Dies können Personen, Maschinen oder auch untergeordnete Zertifizierungsstellen sein. Die RA prüft den Zertifizierungsantrag und nach erfolgreicher Prüfung, kann dieses dann durch die Zertifizierungsstelle signiert werden. 
-\item [\textbf{Zertifikatssperrliste (CRL):}] Eine Zertifikatssperrliste(CRL), enthält alle Zertifikate, welche vor ihrem eigentlich Ablaufdatum ungültig geworden sind. Dies kann bspw. durch einen geknackten Algorithmus bei einem der Schlüssel passieren. 
-\item [\textbf{Verzeichnisdienst (Directory Service):}] Ein Verzeichnisdienst, enthält alle ausgestellten Zertifikate. In Unternehmen ist dieser Dienst meistens durch einen LDAP-Server realisiert. 
-\item [\textbf{Validierungsdienst (VA)}:] Ein Validierungsdienst(VA), stell die Möglichkeit bereit ein Zertifikat in Echtzeit zu prüfen. Im Normalfall ist dies durch OCSP oder SCVP realisiert.  
+Mit Hilfe der digitalen Zertifikate wird die Echtheit eines Objekts sichergestellt, zudem kann die Authentizität und Integrität mit Hilfe von kryptographischen Verfahren nachgeprüft werden. Ein Zertifikat enthält die Schlüssel, welche zur Authentifizierung und Ver- und Entschlüsselung der zu übertragenden Daten sorgen. Die Ausstellung eines digitalen Zertifikats erfolgt durch die Zertifizierungsstelle (CA).
+\item [\textbf{Zertifizierungsstelle (CA):}]Eine Zertifizierungsstelle oder auch certificate authority (CA), bildet den Kern einer PKI. Sie ist für das Herausgeben der Zertifikate verantwortlich und trägt die Verantwortung für die Integrität dieser. 
+\item [\textbf{Registrierungsstelle (RA):}]Eine Registrierungsstelle oder auch registration authority (RA), ist eine Organisation bei der Zertifikate beantragt werden können. Dies können Personen, Maschinen oder auch untergeordnete Zertifizierungsstellen sein. Die RA prüft den Zertifizierungsantrag und nach erfolgreicher Prüfung, kann dieses dann durch die Zertifizierungsstelle signiert werden. 
+\item [\textbf{Zertifikatssperrliste (CRL):}] Eine Zertifikatssperrliste oder auch certificate revocation list (CRL) enthält alle Zertifikate, welche vor ihrem eigentlich Ablaufdatum ungültig geworden sind. Dies kann bspw. durch einen geknackten Algorithmus bei einem der Schlüssel passieren. 
+\item [\textbf{Verzeichnisdienst (Directory Service):}] Ein Verzeichnisdienst enthält alle ausgestellten Zertifikate.
+\item [\textbf{Validierungsdienst (VA)}:] Ein Validierungsdienst oder auch validation authority (VA) stellt die Möglichkeit bereit ein Zertifikat in Echtzeit zu prüfen. 
 \end{quotation}
 
 Im Rahmen des Praktikums wurde eine solche PKI bereits zur Verfügung gestellt. Im nächsten Abschnitt wird die Erstellung eines Server-Zertifikats gezeigt, wie es auch für die Lösung der Aufgabenstellung erforderlich ist. 
 \subsubsection{Erstellung eines Server-Zertifikats}
-Der Ablauf für die Erstellung eines Server-Zertifikats besteht aus insgesamt sechs Schritten, diese werden nun ihrer Reihenfolge nach beschrieben. 
+Der Ablauf für die Erstellung eines Server-Zertifikats besteht aus insgesamt sechs Schritten. Diese werden nun ihrer Reihenfolge nach beschrieben. 
 
 \begin{enumerate}
-\item Der Benutzer muss sich zuerst ein Schlusslpaar erzeugen (privater/öffentlicher)\cite{JueNeuSaDue}.
-\item Auf der CA-Seite, kann sich der der Benutzer nun die req.cnf runterladen. In dieser Datei sind alle Grundeinstellungen der CA enthalten\cite{JueNeuSaDue}. 
-\item Aus der req-Datei und dem Schlüssel kann der Benutzer nun einen Zertifikats-Request erstellen (Request, Fileextension csr). Dieser Request enthält den öffentlichen Schlüssel, welcher dann von der CA beglaubigt wird\cite{JueNeuSaDue}. 
-\item Jetzt kann die csr-Datei auf die CA-Seite hochgeladen werden\cite{JueNeuSaDue}. 
-\item Der Request wird nun auf dem CA-Server verarbeitet und das signierte Zertifikat für den Benutzer auf der Seite der CA zum Download bereitgestellt (vgl.\cite{JueNeuSaDue}). 
-\item Diese crt-Datei, welche nun heruntergeladen werden kann, kann nun einfach für die Sicherung der Netzwerkkomponenten genutzt werden, bspw. für den VPN-Client oder VPN-Server\cite{JueNeuSaDue}.  
+\item Der Benutzer muss sich zuerst ein Schlusslpaar erzeugen (privat / öffentlich)\cite{JueNeuSaDue}.
+\item Auf der CA-Seite, kann sich der der Benutzer nun die req.cnf runterladen. In dieser Datei sind alle Grundeinstellungen der CA enthalten (vgl.\cite{JueNeuSaDue}). 
+\item Aus der req-Datei und dem Schlüssel kann der Benutzer danach einen Zertifikats-Request erstellen (Request, Fileextension csr). Dieser Request enthält den öffentlichen Schlüssel, welcher dann von der CA beglaubigt wird (vgl.\cite{JueNeuSaDue}). 
+\item Jetzt kann die csr-Datei auf die CA-Seite hochgeladen werden (vgl.\cite{JueNeuSaDue}). 
+\item Der Request wird nun auf dem CA-Server verarbeitet und das signierte Zertifikat für den Benutzer, auf der Seite der CA, zum Download bereitgestellt (vgl.\cite{JueNeuSaDue}). 
+\item Diese crt-Datei, welche nun heruntergeladen werden kann, kann nun einfach für die Sicherung der Netzwerkkomponenten genutzt werden, bspw. für den VPN-Client oder VPN-Server (vgl.\cite{JueNeuSaDue}).  
 \end{enumerate}
 
-Für die Lösung der Aufgabenstellung muss dieser Vorgang insgesamt zwei Mal durchgeführt werden, da für Client und Server ein solches Server-Zertifikat benötigt wird. Zu beachten ist auch, dass die Software OpenSSL zwingend für die Erstellung des privaten Schlüssels, installiert sein muss.
+Für die Lösung der Aufgabenstellung muss dieser Vorgang insgesamt zwei Mal durchgeführt werden, da für Client und Server ein solches Server-Zertifikat benötigt wird. Zu beachten ist auch, dass die Software OpenSSL zwingend für die Erstellung des privaten Schlüssels installiert sein muss.
 
 Der Gesamtprozess zur Erstellung eines Server-Zertifikats wird in Abbildung \ref{fig:Zertifikaserstellung} nochmals verdeutlicht.  
 \begin{figure}[!h]
@@ -519,11 +519,11 @@ Der Gesamtprozess zur Erstellung eines Server-Zertifikats wird in Abbildung \ref
 	\label{fig:Zertifikaserstellung}
 \end{figure}
 \newpage
-Im folgenden Abschnitt wird, die für die Umsetzung der VPN-Verbindung benötigte Software OpenVPN eingeführt. 
+Im folgenden Abschnitt wird die für die Umsetzung der VPN-Verbindung benötigte Software OpenVPN eingeführt. 
 \newpage
 \subsection{OpenVPN}\label{openvpn}
 
-Für die Lösung der Problemstellung wurde die Software OpenVPN genutzt, da sie den Anforderungen an die Aufgabenstellung entspricht. Da OpenVPN zwingend die Software OpenSSL voraussetzt und diese ohnehin für die Erstellung der privaten Schlüssel genutzt wird, war die Wahl schnell getroffen (vgl. \cite{openV-1}). 
+Für die Lösung der Problemstellung wurde die Software OpenVPN genutzt, da sie den Anforderungen an die Aufgabenstellung gerecht wird. Da OpenVPN zwingend die Software OpenSSL voraussetzt und diese ohnehin für die Erstellung der privaten Schlüssel genutzt wird, begünstigte die Wahl von OpenVPN zusätzlich (vgl. \cite{openV-1}). 
 
 \subsubsection{Grundlagen}
 OpenVPN ist eine frei verfügbare Software für die Einrichtung eines virtuellen Netzwerks, über eine verschlüsselte TLS/SSL-Verbindungen. Wie bereits angesprochen, erfolgt die Verschlüsselung mit Hilfe von OpenSSL. Es kann wahlweise UPD oder TCP als Transportprotokoll eingesetzt werden. Zur Authentifizierung bietet OpenVPN das sogenannte Pre-shared Key Verfahren oder eine Authentifizierung über Zertifikate, welches im Rahmen des Praktikums auch eingesetzt wurde (vgl. \cite{openV-1}). 
@@ -532,35 +532,35 @@ OpenVPN bietet grundlegend folgende Eigenschaften:
 
 \begin{itemize}
 \item Verfügbarkeit verschiedenen Betriebsmodi (Bridging oder Routing),
-\item Tunnelung in beliebige Subnetze 
-\item Verschiedene Verschlüsselungsarten (Pre-shared Key / Zertifikate)
-\item Skalierbarkeit bei VPN-Serverfarmen
+\item Tunnelung in beliebige Subnetze, 
+\item Verschiedene Verschlüsselungsarten (Pre-shared Key / Zertifikate),
+\item Skalierbarkeit bei VPN-Serverfarmen.
 \end{itemize}
 
 \subsubsection{Authentifizierung}
-Wie schon angesprochen, verfügt OpenVPN über zwei verschiedene Methoden zur Authentifizierung, folgend werden beide gegenüberstellt. 
+Wie schon angesprochen verfügt OpenVPN über zwei verschiedene Methoden zur Authentifizierung. Folgend werden beide gegenüberstellt. 
 
 \begin{quotation}
 \item[\textbf{Pre-shared Key:}]
-ist ein symmetrisches Verfahren, der Schlüssel wird im VPN-Server erstellt und an die Clients verteilt. Es handelt sich um ein sehr einfaches Verfahren. Jedoch ist es nicht sehr sicher, da es nur einen Schlüssel gibt und falls dieser korrumpiert werden sollte, müssten sämtliche Kommunikationsteilnehmer neue Schlüssel erhalten und wären potentiell in Gefahr (vgl. \cite{openV-1}). 
+Stellt ein symmetrisches Verfahren da. Der Schlüssel wird dabei im VPN-Server erstellt und an die Clients verteilt. Es handelt sich um ein sehr einfaches Verfahren. Jedoch ist es nicht sehr sicher, da es nur einen Schlüssel gibt und falls dieser korrumpiert werden sollte, müssten sämtliche Kommunikationsteilnehmer neue Schlüssel erhalten und wären potentiell in Gefahr (vgl. \cite{openV-1}). 
 
 \item[\textbf{Zertifikatsbasiert:}]
-ist ein auf dem TLS-Protokoll basierendes Verfahren, welches aktuell als sehr sicher klassifiziert wird. Dieses Verfahren beruht auf privaten und öffentlichen Schlüsselpaaren. Der Server und der Client erhalten jeweils ein öffentliches und privates Zertifikat. Mit Hilfe von easy-rsa könnten auch sehr einfach die benötigen Zertifikate erstellt werden. Diese Aufgabe wird jedoch im Praktikum durch die PKI übernommen. Allgemein ist dieses Verfahren sicherer als das Pre-shard Key, es bringt aber auch eine höhere Komplexität bei der Umsetzung mit sich (vgl. \cite{openV-1}). 
+Ist ein auf dem TLS-Protokoll basierendes Verfahren, welches aktuell als sehr sicher klassifiziert wird. Dieses Verfahren beruht auf privaten und öffentlichen Schlüsselpaaren. Der Server und der Client erhalten jeweils ein öffentliches und privates Zertifikat. Mit Hilfe von easy-rsa könnten auch sehr einfach die benötigen Zertifikate erstellt werden. Diese Aufgabe wird jedoch im Praktikum durch die PKI übernommen. Allgemein ist dieses Verfahren sicherer als das Pre-Shared Key, es bringt aber auch eine höhere Komplexität bei der Umsetzung mit sich (vgl. \cite{openV-1}). 
 \end{quotation} 
 
 \subsubsection{Kommunikation}
 
-Mittels OpenVPN kann entweder eine Client-Server Verbindung aufgebaut werden, auch Roadwarrior genannt, oder, wie in der Aufgabenstellung gefordert, eine Site-to-Site Verbindung. Im Standard wird die Kommunikation über das zustandslose UDP-Protokoll abgewickelt. Diese kann jedoch auch auf das TCP-Protokoll umgestellt werden (vgl. \cite{openV-1}). 
+Mittels OpenVPN kann entweder eine Client-Server Verbindung aufgebaut werden, auch Roadwarrior genannt, oder, wie in der Aufgabenstellung gefordert, eine Site-to-Site Verbindung. In der Standardkonfiguration wird die Kommunikation über das zustandslose UDP-Protokoll abgewickelt. Diese kann jedoch auch auf das TCP-Protokoll umgestellt werden (vgl. \cite{openV-1}). 
 
-Zudem bietet OpenVPN auch verschiedene Netzwerkmodi an Bridging-Mode (Tap-Device) und Routing-Mode (Tun-Device). 
+Zudem bietet OpenVPN auch verschiedene Netzwerkmodi Bridging-Mode (Tap-Device) und Routing-Mode (Tun-Device) an. 
 Diese zwei Modi werden folgend gegenübergestellt. 
 
 \begin{quotation}
 \item[\textbf{Bridging-Mode(Tap-Device):}]
-in diesem Modus wird ein vollständiges Tunneln des Ethernet-Frames (Layer 2) vorgenommen. Der Client erhält in diesem Fall die IP-Adresse des aktuellen Subnetzes. Die Broadcast müssen in dem Fall auch weitergeleitet werden, um eine potentielle Namensauflösung via SMB-Protokoll zu gewährleisten (vgl. \cite{openV-1}).
+in diesem Modus wird ein vollständiges Tunneln des Ethernet-Frames (Schicht 2) vorgenommen. Der Client erhält in diesem Fall die IP-Adresse des aktuellen Subnetzes. Die Broadcast müssen in dem Fall auch weitergeleitet werden, um eine potentielle Namensauflösung via SMB-Protokoll zu gewährleisten (vgl. \cite{openV-1}).
 
 \item[\textbf{Routing-Mode (Tun-Device):}]
-in diesem Modus werden ausschließlich IP-Pakete (Layer 3) über einen verschlüsselten Tunnel verschickt. Jeder Kommunikationspartner bekommt eine virtuelle IP-Adresse eines fiktiven Subnetzes. Somit ist der Zugriff auf das dahinter liegenden Netz standardmäßig nicht möglich. Dies muss dann über die Routing-Tabellen der Firewalls  oder IP-Forwarding realisiert werden (vgl. \cite{openV-1}).
+in diesem Modus werden ausschließlich IP-Pakete (Schicht 3) über einen verschlüsselten Tunnel verschickt. Jeder Kommunikationspartner bekommt eine virtuelle IP-Adresse eines fiktiven Subnetzes. Somit ist der Zugriff auf das dahinter liegenden Netz standardmäßig nicht möglich. Dies muss dann über die Routing-Tabellen der Firewalls  oder IP-Forwarding realisiert werden (vgl. \cite{openV-1}).
 \end{quotation}
 
 In der folgenden Tabelle \ref{my-Tun/Tap} werden abschließend für dieses Kapitel noch die Vor- und Nachteile der beiden beschriebenen Modi gegenüber gestellt. 
