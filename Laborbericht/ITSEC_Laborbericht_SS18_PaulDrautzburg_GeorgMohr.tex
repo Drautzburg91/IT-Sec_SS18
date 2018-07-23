@@ -557,7 +557,7 @@ Diese zwei Modi werden folgend gegenübergestellt.
 
 \begin{quotation}
 \item[\textbf{Bridging-Mode(Tap-Device):}]
-in diesem Modus wird ein vollständiges Tunneln des Ethernet-Frames (Schicht 2) vorgenommen. Der Client erhält in diesem Fall die IP-Adresse des aktuellen Subnetzes. Die Broadcast müssen in dem Fall auch weitergeleitet werden, um eine potentielle Namensauflösung via SMB-Protokoll zu gewährleisten (vgl. \cite{openV-1}).
+in diesem Modus wird ein vollständiges Tunneln des Ethernet-Frames (Schicht 2) vorgenommen. Der Client erhält in diesem Fall die IP-Adresse des aktuellen Subnetzes. Die Broadcasts müssen in dem Fall auch weitergeleitet werden, um eine potentielle Namensauflösung via SMB-Protokoll zu gewährleisten (vgl. \cite{openV-1}).
 
 \item[\textbf{Routing-Mode (Tun-Device):}]
 in diesem Modus werden ausschließlich IP-Pakete (Schicht 3) über einen verschlüsselten Tunnel verschickt. Jeder Kommunikationspartner bekommt eine virtuelle IP-Adresse eines fiktiven Subnetzes. Somit ist der Zugriff auf das dahinter liegenden Netz standardmäßig nicht möglich. Dies muss dann über die Routing-Tabellen der Firewalls  oder IP-Forwarding realisiert werden (vgl. \cite{openV-1}).
