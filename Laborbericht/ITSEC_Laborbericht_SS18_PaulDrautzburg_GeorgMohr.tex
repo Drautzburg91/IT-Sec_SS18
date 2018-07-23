@@ -359,49 +359,49 @@ In der nachfolgenden Tabelle werden, anhand der Schichten, die einzelnen Protoko
 \label{OSI}
 \end{table}
 
-Wie bereits in der Aufgabenstellung beschrieben (vgl. \ref{kap:Aufgabenstellung} \nameref{kap:Aufgabenstellung}), soll eine site-to-site VPN eingerichtet werden. Da es sich um eine die Verbindung handelt, kann der Fokus auf die Transport-orientierten Schichten der OSI-Modells 1-4 gerichtet werden. Für die Umsetzung einer VPN-Verbindung und Konfiguration der internen Firewalls sind die folgenden Protokolle von  Bedeutung. 
+Wie bereits in der Aufgabenstellung beschrieben (vgl. \ref{kap:Aufgabenstellung} \nameref{kap:Aufgabenstellung}), soll eine site-to-site VPN eingerichtet werden. Da es sich um eine die Verbindung handelt, kann der Fokus auf die transportorientierten Schichten des OSI-Modells 1-4 gerichtet werden. Für die Umsetzung einer VPN-Verbindung und die Konfiguration der internen Firewalls sind die folgenden Protokolle von Bedeutung. 
 \begin{quotation}
 \item [\textbf{"ICMP"}] Das Internet Control Message Protocol wird dazu verwendet in Rechnernetzen einen Austausch von Fehlermeldungen durchzuführen. 
 \item [\textbf{"IP"}] Das Internet Protocol ist ein zustands- und verbindungsloses Protokoll, welches die Implementierung der Vermittlungsschicht (3) widerspiegelt. 
 \item [\textbf{"IPsec"}] Das Internet Protocol Security ist eine Erweiterung des IP-Protokolls und soll eine gesicherte Kommunikation über unsichere IP-Netze ermöglichen.  
 \item [\textbf{"TCP"}] Das Transmission Control Protocol wird von allen modernen Betriebssystemen genutzt, um zu definieren, wie die Daten zwischen verschiedenen Netzwerkkomponenten ausgetauscht werden sollen. 
-\item [\textbf{"UDP"}] Das User Datagram Protocol zeichnet sich dadurch aus, dass es verbindungslos und ungeschützt ist. Es kann also nicht gesichert werden, ob ein gesendetes Datenpaket richtig (nicht verfälscht von Dritten) oder überhaupt ankommt (vgl.\cite{Kurose2008Computernetzwerke})
+\item [\textbf{"UDP"}] Das User Datagram Protocol zeichnet sich dadurch aus, dass es verbindungslos und ungeschützt ist. Es kann also nicht sichergestellt werden, ob ein gesendetes Datenpaket richtig (nicht verfälscht von Dritten) oder überhaupt ankommt (vgl.\cite{Kurose2008Computernetzwerke})
 \end{quotation}
-Diese beschriebenen Protokolle sind bei der Lösung der Problemstellung von großer Bedeutung. Sie werden bei der Erstellung der Lösungsskizze wieder aufgegriffen (vgl. Kapitel \ref{loesungsskizze}). Um die Beschreibung Netzwerkprotokolle zu komplettieren, muss noch eine Ebene tiefer geschaut werden: auf die Datenpakte. Im nächsten Abschnitt wird der Aufbau und die wichtigsten Eigenschaften eines Datenpakets beschrieben. 
+Diese beschriebenen Protokolle sind bei der Lösung der Problemstellung von großer Bedeutung. Sie werden bei der Erstellung der Lösungsskizze wieder aufgegriffen (vgl. Kapitel \ref{loesungsskizze}). Um die Beschreibung Netzwerkprotokolle zu komplettieren, muss noch eine Ebene tiefer betrachtet werden: auf die Datenpakte. Im nächsten Abschnitt wird der Aufbau und die wichtigsten Eigenschaften eines Datenpakets beschrieben. 
 
-\subsubsection{Aufbau eins Datenpakets}
+\subsection{Aufbau eins Datenpakets}
 Im vorhergehenden Abschnitt wurden die wichtigsten Netzwerkprotokolle für den Rahmen des Laborpraktikums beschrieben. In diesem Abschnitt, wird das Zusammenspiel eines Netzwerksprotokoll und eines Datenpakets gezeigt. 
  
 In einem Protokoll wird der Aufbau eines Datenpakets definiert, zudem enthält es wichtige Informationen über den Datenaustausch. 
 Es definiert, 
 \begin{itemize}
 \item wer der Absender und Empfänger eines Datenpaktes sein soll,
-\item von welchem Typ ein Datenpaket ist, ob es für den Verbindungsaufbau, Verbindungsabbau oder für Nutzdaten genutzt wird, 
+\item von welchem Typ ein Datenpaket ist, ob es für den Verbindungsaufbau, Verbindungsabbau oder für Nutzdaten verwendet wird, 
 \item die Größe des Datenpaket, welches beim Empfänger ankommen soll. 
 \end{itemize}
 Wenn es sich um eine mehrteilige Kommunikation handelt, muss zusätzlich noch die laufende Nummer und die Anzahl der Pakte definiert werden. Zuletzt folgt noch eine Prüfsumme, mit dessen Hilfe der Empfänger prüfen kann, ob die Datenpakete fehlerfrei angekommen sind. 
-All diese beschriebenen Informationen werden dem "Header" eines Datenpaktes vorne oder hinten angehängt, dieser angehängte Bereich wird auch "Trailer" genannt. Anhand der folgenden Abbildung \ref{fig:datenpaket} wird der Aufbau eines Datenpakts und der einzelnen Bestandteile noch verdeutlicht. 
+All diese beschriebenen Informationen werden dem "Header" eines Datenpaktes vorne oder hinten angehängt. Dieser angehängte Bereich wird auch "Trailer" genannt. Anhand der folgenden Abbildung \ref{fig:datenpaket} wird der Aufbau eines Datenpakts und der einzelnen Bestandteile verdeutlicht. 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{pictures/datenpaket.png}
 	\caption{Aufbau eines Datenpakets \cite{Header-Dat}}
 	\label{fig:datenpaket}
 \end{figure}
 
-Nachdem nun die wichtigsten Bestandteile eines Datenpakets eingeführt wurden, sind alle Grundlagen aus dem Bereich der Netzwerkarchitektur und Netzwerktechnik beschrieben, welche im Rahmen des Praktikums benötigt werden. Es wurde die Begriffe DMZ, Intranet und Internet eingeführt, sowie die wichtigsten Netzwerkprotokolle und ihr Zusammenhang zu den Datenpaketen. 
+Nachdem nun die wichtigsten Bestandteile eines Datenpakets eingeführt wurden, sind alle Grundlagen aus dem Bereich der Netzwerkarchitektur und der Netzwerktechnik beschrieben, welche im Rahmen des Praktikums benötigt werden. Es wurde die Begriffe DMZ, Intranet und Internet eingeführt, sowie die wichtigsten Netzwerkprotokolle und deren Zusammenhang zu den Datenpaketen. 
 
-Im folgenden Kapitel wird das zugrundeliegendes Betriebssystem "Debian GNU Linux 7.11" und die Besonderheiten in der Laborumgebung in Kürze Beschrieben.
+Im folgenden Kapitel wird das zugrundeliegendes Betriebssystem "Debian GNU Linux 7.11" und die Besonderheiten in der Laborumgebung in Kürze beschrieben.
 \subsection{Virtuelles Betriebsystem (Debian GNU/Linux 7.11) }\label{Linux}
 Debian GNU Linux 7.11 ist ein kostenfreies und gemeinschaftliches entwickeltes Betriebssystem. Die Version 7.11, welche im Rahmen des Praktikums eingesetzt wird, gehört zu einer älteren Version und wird von Softwareentwicklern nicht mehr unterstützt. GNU Linux 7.11 unterstützt verschieden Rechnerarchitekturen wie z.B. x86(i386 \& amd64). 
 
-Die Besonderheit im Laborpraktikum ist die, dass mit virtuellen Maschinen auf einem zugrundeliegenden Windows 10 Betriebssystems gearbeitet wird. Dies birgt einige Probleme, zum einen müssen die virtuellen Maschinen im Bereich der Netzwerkadapter einwandfrei konfiguriert sein.
+Die Besonderheit im Laborpraktikum ist die, dass mit virtuellen Maschinen auf einem zugrundeliegenden Windows 10 Betriebssystems gearbeitet wird. Dies birgt einige Probleme mitsich. Zum einen müssen die virtuellen Maschinen im Bereich der Netzwerkadapter einwandfrei konfiguriert sein.
 
-Zum anderen kann mit den Maschinen nicht auf das Internet zugegriffen werden. Dies stellt ein wesentliches Problem dar, da ohne Verbindung zum Internet Paketdienste wie "Aptiude" nicht funktionieren. Aus letzterem Grund muss zwingend bei der Installation von neuen Paketen das virtuelle Image in die Maschine "eingelegt" werden. Eine andere Möglichkeit wäre, die Pakete einzelnen mit Hilfe des zugrunde liegenden Systems zu Downloaden und einzeln einzuspielen. Diese Variante stellte sich aber als sehr zeitintensiv und kompliziert heraus, da jedes Paket Abhängigkeiten mitbringt und diese zusätzlich an Versionen gebunden sind. So kann es passieren, dass dieser Prozess der Installation eine neue Problemkette im Betriebssystem schafft. Somit wurden alle Pakete, welche für die Lösung der Aufgabe benötigt wurden, mit Hilfe der bereitliegenden Linux-Images installiert.  
+Zum anderen kann mit den Maschinen nicht auf das Internet zugegriffen werden. Dies stellt ein wesentliches Problem dar, da ohne Verbindung zum Internet Paketdienste wie "Aptiude" nicht funktionieren. Aus letzterem Grund muss zwingend bei der Installation von neuen Paketen das virtuelle Image in die Maschine "eingelegt" werden. Eine andere Möglichkeit ist, die Pakete einzelnen mit Hilfe des zugrunde liegenden Systems zu herunterzuladen und einzeln einzuspielen. Diese Variante stellte sich aber als sehr zeitintensiv und kompliziert heraus, da jedes Paket Abhängigkeiten mitbringt und diese zusätzlich an Versionen gebunden sind. So kann es passieren, dass dieser Prozess der Installation eine neue Problemkette im Betriebssystem schafft. Somit wurden alle Pakete, welche für die Lösung der Aufgabe benötigt wurden, mit Hilfe der bereitliegenden Linux-Images installiert.  
 
-Eine weitere Besonderheit ist die, dass es keine grafische Benutzeroberfläche gibt, dies setzt die Arbeit "auf Konsole" voraus.  Somit muss auch mit den Linux internen Texteditoren, wie z.B. dem "VI" oder "Nano" gearbeitet werden. Dies stellt insofern ein Problem dar, da Linux in sich hochgradig "case sensitiv" reagiert. Dies bedeutet im Umkehrschluss, dass wenn ein Leerzeichen oder Komma falsch gesetzt wird, terminiert beispielweise ein Skript nicht so wie der Nutzer es vorgesehen hat. Jedoch ist es zwingend empfohlen, sämtliche Skripte auf dem virtuellen System zu schreiben, da sonst durch das Kopieren von ,beispielsweise einem Windows Betriebssystem, illegale nicht sichtbare Steuerzeichen im Skript auftreten könnten (vgl.\cite{editoren-3}). 
+Eine weitere Besonderheit ist die, dass keine grafische Benutzeroberfläche vorhanden ist, dies setzt die Arbeit mit dem Terminal voraus.  Somit muss auch mit den Linux internen Texteditoren, wie z.B. dem "VI" oder "Nano" gearbeitet werden. Dies stellt insofern ein Problem dar, da Linux in sich hochgradig "case sensitiv" reagiert. Dies bedeutet im Umkehrschluss, dass wenn ein Leerzeichen oder Komma falsch gesetzt wird, terminiert beispielweise ein Skript nicht so wie der Nutzer es vorgesehen hat. Jedoch ist es empfohlen sämtliche Skripte auf dem virtuellen System zu schreiben, da sonst durch das Kopieren von, beispielsweise einem Windows Betriebssystem, illegale nicht sichtbare Steuerzeichen im Skript auftreten können (vgl.\cite{editoren-3}). 
 
-Ein wichtiger Punkt im Zusammenspiel der Skripte und dem Betriebssystem, ist die Wahl der Shell, mit welcher es ausgeführt werden soll. Linux bietet viele verschiedene Shells an, im Rahmen des Praktikums wurde ausschließlich mit der sogenannten "bash" gearbeitet, da sie unter Linux die "Standard-Login" Shell darstellt\cite{bash-2}. In sämtlichen Skripten wurde in der ersten Zeile der sogenannten "Shebang", welcher aus "\# !" besteht, eingefügt. Gefolgt von diesem wird der Ort des Interpreter angegeben, mit welchem das Skript ausgeführt werden soll. In diesem Fall sieht diese erste Zeile eines Skripts immer aus wie folgt , "\#! /bin/bash" (vgl.\cite{shebang-1}). 
-//korrektur bis hier her gemacht 17:00 Uhr
-Damit wurden alle wichtigen Besonderheiten des Betriebssystem im Rahmen des Praktikums eingeführt. Im nächsten Kapitel wird das "IP-Tables" Paket von Linux eingeführt, da dieses einen Grundstein für die Lösung der Aufgabenstellung im Bezug auf die internen Firewalls darstellt. 
+Ein wichtiger Punkt im Zusammenspiel der Skripte und dem Betriebssystem ist die Wahl der Shell, mit welcher das Skript ausgeführt werden soll. Linux bietet viele verschiedene Shells an. Im Rahmen des Praktikums wurde ausschließlich mit der sogenannten "Bourne-again shell" (bash) gearbeitet, welche unter Linux die "Standard-Login" Shell darstellt (vgl.\cite{bash-2}). In sämtlichen Skripten wurde in der ersten Zeile der sogenannte "Shebang", welcher aus "\# !" besteht, eingefügt. Gefolgt von diesem wird der Ort des Interpreter angegeben, mit welchem das Skript ausgeführt werden soll. In diesem Fall sieht diese erste Zeile eines Skripts immer wie folgt aus, "\#! /bin/bash" (vgl.\cite{shebang-1}). 
+
+Damit wurden alle wichtigen Besonderheiten des Betriebssystems, welche im Kontext des Praktikums relevant sind, eingeführt. Im nächsten Kapitel wird das "IP-Tables" Paket von Linux eingeführt, da dieses einen Grundstein für die Lösung der Aufgabenstellung, im Bezug auf die internen Firewalls, darstellt. 
 \subsection{IP-Tables}\label{iptables}
 In diesem Kapitel werden die Möglichkeiten des Linux Pakets "IP-Tables" zur Filterung von Paketen beschrieben und eingeführt. Mit Hilfe dieses Pakets werden die für die Lösung erforderlichen Firewall-Skripte erstellt.  
 
