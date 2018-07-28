@@ -72,7 +72,7 @@ Die, in der Auflistung \ref{lst:allgemeineRegeln} dargestellten Regeln, sind all
 	--state & Status der eintreffenden Pakete, hier NEW, RELATED,ESTABLISHED. \\ 
 	\hline 
 \end{tabular} 
-\caption{IPTABLES Optionen und Beschreibung} \label{tab:iptablesOptionen}
+\caption{Ip-Tables Optionen und Beschreibung} \label{tab:iptablesOptionen}
 \end{table}
 Nach den allgemeinen Regeln müssen nun die VPN spezifischen Regeln definiert werden. Dazu muss man die auf den VPN-Ports eintreffenden und ausgehenden Pakete betrachten. Diese Ports sind entweder 1194 oder 1195. In der Auflistung \ref{lst:VPNRegeln} werden die VPN Regeln aufgelistet. Eine Besonderheit bei VPN ist, das zum einen alle Verbindungen, die über das Netzwerkinterface tun0 eintreffenden Pakete ohne Überprüfung an das Inteface eth0 übergeben werden. Zum anderen wird noch die Tabelle NAT benötigt, welche das ''*nat'' angibt. In dieser Tabelle gibt es die Chain POSTROUTING. Über diese kann nachträglich der Verkehrsheader eines Paketes verändert werden. MASQUERADE hat dabei die Funktion, dass wenn ein Paket versendet wird, die Source-IP-Adresse so verändert wird, dass nur noch die IP-Adresse des Firewallservers ersichtlich ist. Dies hat den Grund, dass von außen nicht ersichtlich wird, welche IP-Adressen sich hinter der Firewall befinden und es so Angreifern erschwert wird, diese anzugreifen.
 \newline
@@ -128,7 +128,7 @@ Nach dem das Skript eingespielt wurde, muss dieses noch so konfiguriert werden, 
 \vspace{\baselineskip}
 Zum anderen die Möglichkeit des automatischen Neuladens der Firewall, ist mit Hilfe des Tools ''iptables-peristent''. Dieses Tool muss mit ''aptitute'' installiert werden. Nach dem das Tool installiert wurde, können mit dem Befehl ''iptables-save > /etc/iptables/rules.v4'' die Regeln für jeden Neustart automatisch geladen werden. 
 \newline 
-Eine weitere Konfiguration die vorgenommen werden muss, ist das Akzeptieren des Forwardings. Dazu muss im Verzeichnis ''/proc'' die Datei ''/proc/sys/net/ipv4/ip\_forward'' die Zeile in der Auflistung \ref{lst:forward} eingefügt werden. Zu Beginn steht in dieser Datei lediglich eine ''0'' diese muss ersetzt werden durch eine ''1'' dies aktiviert das Forwarding.\newline
+Eine weitere Konfiguration die vorgenommen werden muss, ist das Akzeptieren des Forwardings. Dazu muss im Verzeichnis ''/proc'' die Datei ''/proc/sys/net/ipv4/ip\_forward'' die Zeile in der Auflistung \ref{lst:forward} eingefügt werden. Zu Beginn steht in dieser Datei lediglich eine ''0'' diese muss ersetzt werden durch eine ''1''. Dies aktiviert das Forwarding.\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
 	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
@@ -137,7 +137,7 @@ Eine weitere Konfiguration die vorgenommen werden muss, ist das Akzeptieren des 
 /bin/echo "1" > /proc/sys/net/ipv4/ip_forward
 \end{lstlisting}
 \vspace{\baselineskip}
-Wurden all diese Einstellungen vorgenommen, kann  mit der Konfiguration der Site-toSite VPN Verbindung begonnen werden, was im nachfolgenden Kapitel beschrieben wird.
+Wurden all diese Einstellungen vorgenommen, kann  mit der Konfiguration der Site-to-Site VPN Verbindung begonnen werden. Diese Konfiguration wird im nachfolgenden Kapitel beschrieben.
 
 
 
@@ -146,9 +146,9 @@ Nach dem die Firewall auf den Servern der Firma A und B eingerichtet wurde, muss
 Dafür muss zu Beginn auf beiden Servern das in Kapitel \ref{openvpn} vorgestellte Tool OpenVPN installiert werden. Dies geschieht, wie schon im Kapitel \ref{firewallloesung}  erwähnt, mit dem Tool ''aptitute''. Nach der Installation müssen, wie nachfolgend erklärt, für den Server der Firma A und B ein Serverzertifikat erstellt werden.
 
 \subsubsection{Serverzertifikate}
-Wie schon in Kapitel \ref{PKI} erklärt, wird für die  Einrichtung eines VPN's Zertifikate benötigt. Diese werden verwendet, um eine Verbindungsverschlüsselung zu realisieren. In diesem Kapitelteil wird anhand der Firma A erklärt, wie ein solches Zertifikat in der Laborumgebung erstellt wird. Um ein Zertifikat für Firma B zu erstellen, ist der gleiche Prozess notwendig. \newline
-Für das Erstellen eines Zertifikates ist das Tool OpenSSL notwendig. Über OpenSSL wird ein öffentlicher und privater Schlüssel erzeugt. Nach dem diese erstellt wurden, muss von der Zertifizierungsstelle die Konfigurationsdatei geladen werden. Mit Hilfe dieser Konfigurationsdatei des privaten Schlüssels und des Tools OpenSSL wird nun eine CSR (Certificate Signing Request) Datei erzeugt. Nach dem diese Datei erzeugt wurde, muss diese zur Zertifizierungsstelle hochgeladen werden. Nach dem Upload der Datei (Zertifikat), muss diese nun signiert werden. Dies wird im Labor mit einem Shellskript realisiert. Nach dem Signieren kann nun das fertige Zertifikat geladen und auf dem Server 
-abgelegt werden. In der Auflistung \ref{lst:openssl}  werden die einzelnen Befehle zur Erstellung der Schlüssel und der CSR Datei gezeigt und die einzelnen Befehle in der Tabelle \ref{tab:openSSLOptionen} näher beschrieben.\newline
+Wie schon in Kapitel \ref{PKI} erklärt, wird für die Einrichtung einer VPN-Verbindung, Zertifikate benötigt. Diese werden verwendet, um eine Verbindungsverschlüsselung zu realisieren. In diesem Abschnitt wird anhand der Firma A erklärt, wie ein solches Zertifikat in der Laborumgebung erstellt wird. Um ein Zertifikat für Firma B zu erstellen, ist der gleiche Prozess notwendig. \newline
+Für das Erstellen eines Zertifikates ist das Tool OpenSSL notwendig. Über OpenSSL wird ein öffentlicher und ein privater Schlüssel erzeugt. Nach dem diese erstellt wurden, muss von der Zertifizierungsstelle die Konfigurationsdatei heruntergeladen werden. Mit Hilfe dieser Konfigurationsdatei des privaten Schlüssels und des Tools OpenSSL wird nun eine CSR (Certificate Signing Request) Datei erzeugt. Nach dem diese Datei erzeugt wurde, muss diese zur Zertifizierungsstelle hochgeladen werden. Nach dem Upload des Zertifikats, muss diese nun signiert werden. Dies wird im Labor mit einem Shellskript realisiert. Nach dem Signieren kann das fertige Zertifikat heruntergeladen und auf dem Server 
+abgelegt werden. In der Auflistung \ref{lst:openssl}  werden die einzelnen Befehle zur Erstellung der Schlüssel und der CSR Datei gezeigt und in der Tabelle \ref{tab:openSSLOptionen} näher beschrieben.\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
 	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
@@ -170,7 +170,7 @@ openssl req -new -key firma-A.key -config req.cnf
 	\hline 
 	openssl & Tool zur Erstellung von privaten Schlüsseln \\ 
 	\hline 
-	genrsa & Befehl zum erstellen des Schlüssels mittels RSA \\ 
+	genrsa & Befehl zum Erstellen des Schlüssels mittels RSA \\ 
 	\hline 
 	-out & Ausgabe des Schlüssels in angegebene Datei \\ 
 	\hline 
@@ -180,16 +180,16 @@ openssl req -new -key firma-A.key -config req.cnf
 	\hline 
 	req -new & Erzeugen eines neuen Requests \\ 
 	\hline 
-	-config & laden der Konfigurationsdatei req.cnf \\ 
+	-config & Laden der Konfigurationsdatei req.cnf \\ 
 	\hline 
 	-reqexts & Erweiterung des X.509 Formates \\ 
 	\hline 
 \end{tabular} 
-\caption{Befehle zur Erstellung eines Privaten Schlüssels mittels OpenSSL} \label{tab:openSSLOptionen}
+\caption{Befehle zur Erstellung eines privaten Schlüssels mittels OpenSSL} \label{tab:openSSLOptionen}
 \end{table}
 
 \subsubsection{Server Firma A}
-Nach dem die Zertifikate, wie im vorherigen Kapitel erstellt wurden, kann nun mit dem Konfigurieren des VPN-Servers begonnen werden. Dazu wird zuerst mittels Root-Users das Verzeichnis ''/etc/opnevpn'' erstellt. Nach dem dieses erstellt wurde, werden zwei Unterverzeichnisse ''/etc/openvpn/certs'' und ''/etc/openvpn/keys'' angelegt. In das Unterverzeichnis ''certs'' werden das Serverzertifikat ''fw2-firma-A.crt'' und die Zertifikatschain (von der Zertifizierungstelle) kopiert. In das Unterverzeichnis ''keys'' wird der private Schlüssel verschoben. Da der private Schlüssel geheimgehalten werden soll, muss die Berechtigung für das Unterverzeichnis noch geändert werden. Dies wird mit dem Befehl ''chmod -R 600 /etc/openvpn/keys/'' bewerkstelligt. Der nächste Schritt ist das erstellen des Diffie-Hellman Schlüssels. Dieser Schlüssel wird später benötigt um später die Verbindung symmetrisch zu verschlüsseln. Der dafür notwendige Befehl wird in der Auflistung \ref{lst:DH} gezeigt.\newline
+Nach dem die Zertifikate erstellt wurden, kann nun mit dem Konfigurieren des VPN-Servers begonnen werden. Dazu wird zuerst mittels Root-Users das Verzeichnis ''/etc/openvpn'' erstellt. Nach dem dieses erstellt wurde, werden zwei Unterverzeichnisse ''/etc/openvpn/certs'' und ''/etc/openvpn/keys'' angelegt. In das Unterverzeichnis ''certs'' werden das Serverzertifikat ''fw2-firma-A.crt'' und die Zertifikatschain (von der Zertifizierungstelle) kopiert. In das Unterverzeichnis ''keys'' wird der private Schlüssel verschoben. Da der private Schlüssel geheimgehalten werden soll, muss die Berechtigung für das Unterverzeichnis geändert werden. Dies wird mit dem Befehl ''chmod -R 600 /etc/openvpn/keys/'' bewerkstelligt. Der nächste Schritt ist das erstellen des Diffie-Hellman Schlüssels. Dieser Schlüssel wird benötigt, um die Verbindung symmetrisch zu verschlüsseln. Der dafür notwendige Befehl wird in der Auflistung \ref{lst:DH} gezeigt.\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
 	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
@@ -198,7 +198,7 @@ Nach dem die Zertifikate, wie im vorherigen Kapitel erstellt wurden, kann nun mi
 openssl dhparam -out dh2048.pem 2048
 \end{lstlisting}
 \vspace{\baselineskip}
-Eine besondere Eigenschaft des Site-to-Site VPN's ist, dass man für jeden einzelnen Clienten eine besondere Konfiguration ''pushen'' kann. Dies bringt den Vorteil, dass, wie hier verwendet, ein Client die Infrastruktur hinter der Firewall so verwenden kann, als wäre sie ein Teil seiner eigenen Infrastruktur. Dazu muss ein weiteres Unterverzeichnis mit dem Namen ''client\_configs" erstellt werden. Darin muss eine Datei angelegt werden, das den gleichen Namen trägt wie das Clientzertifikat. In dieser Datei werden die Konfigurationsdaten für den Clienten geschrieben, wie in Auflistung \ref{lst:clientconf} zu sehen ist.\newline
+Eine besondere Eigenschaft des Site-to-Site VPN's ist, dass für jeden einzelnen Client eine besondere Konfiguration ''pushen'' kann. Dies hat den Vorteil, dass, wie hier verwendet, ein Client die Infrastruktur hinter der Firewall so verwenden kann, als wäre sie ein Teil seiner eigenen Infrastruktur. Dazu muss ein weiteres Unterverzeichnis mit dem Namen ''client\_configs" erstellt werden. Darin muss eine Datei angelegt werden, die den gleichen Namen trägt wie das Clientzertifikat. In dieser Datei werden die Konfigurationsdaten für den Client geschrieben, wie in Auflistung \ref{lst:clientconf} zu sehen ist.\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
 	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
@@ -208,7 +208,7 @@ iroute 192.168.70.0 255.255.255.0
 iroute 192.168.80.0 255.255.255.0
 \end{lstlisting}
 \vspace{\baselineskip}
-Das ''iroute'' Statement gibt dem Client an, welche IP-Adressen von ihm angesprochen werden können. \newline Nun muss als letztes die OpenVPN Konfigurationsdatei erstellt und angepasst werden. Dazu können die bei der Installation von OpenVPN mitgelieferten Beispieldateien verwendet werden und nach und nach an den Verwendungszweck angepasst werden. Für die Konfiguration für den Server wird die ''server.conf'' benötigt.\newline
+Das ''iroute'' Statement gibt dem Client an, welche IP-Adressen von ihm angesprochen werden können. \newline Nun muss als letztes die OpenVPN Konfigurationsdatei erstellt und angepasst werden. Dazu können die bei der Installation von OpenVPN mitgelieferten Beispieldateien verwendet werden und nach und nach an den Verwendungszweck angepasst werden. Für die Konfiguration für des Servers wird die ''server.conf'' benötigt.\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
 	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
@@ -262,32 +262,32 @@ verb 3
 Die Auflistung \ref{lst:serverconf} zeigt die ''server.conf'' der Firma A. Dabei wird von oben nach unten die folgenden Konfigurationsbefehle abgearbeitet.
 \begin{description}
 	\item[script-security 3]
-	Beschreibt die Skript Sicherheit, das heißt hier wird definiert wie OpenVPN externe Programme und Skripte verwenden darf. Die drei  erlaubt die Übergabe von Passwörtern an Skripte über Umgebungsvariablen.
-	\item[port 1194] Definiert den Port über den der VPN Verkehr abläuft. Alternativport 1195
+	Beschreibt die Skript Sicherheit. Das heißt hier wird definiert wie OpenVPN externe Programme und Skripte verwenden darf. Die "3" erlaubt die Übergabe von Passwörtern an Skripte über Umgebungsvariablen.
+	\item[port 1194] Definiert den Port über den der VPN Verkehr abläuft. Alternativport 1195.
 	\item[proto udp] Definiert über welches Protokoll kommuniziert wird. 
 	\item[dev tun] Erzeugt einen gerouteten IP-Tunnel.
-	\item[tls-server auth SHA1] Authentifikationskonfiguration
-	\item[ca] Pfadangabe zur Zertifkatschain
-	\item[cert] Pfadangabe zum Serverzertifikat 
-	\item[key] Pfadangabe zum Privaten Schlüssel
-	\item[dh] Pfadangabe zum Diffi-Hellman Key 
-	\item[server] Spezifiziert den Server als Server und gibt den IP-Adressen den Raum des VPN Netzes an.	
-	\item[ifconfig-pool-persist] Datei in dem IP-Adressen der Clients gespeichert werden, um beim nächsten Verbinden von des selben Client, diesem die gleiche IP-Adresse zu geben. 
+	\item[tls-server auth SHA1] Authentifikationskonfiguration.
+	\item[ca] Pfadangabe zur Zertifkatschain.
+	\item[cert] Pfadangabe zum Serverzertifikat.
+	\item[key] Pfadangabe zum Privaten Schlüssel.
+	\item[dh] Pfadangabe zum Diffi-Hellman Key.
+	\item[server] Spezifiziert das System als Server und gibt den IP-Adressen den Raum des VPN Netzes an.	
+	\item[ifconfig-pool-persist] Datei in dem IP-Adressen der Clients gespeichert werden, um beim nächsten Verbinden des selben Clients, diesem die gleiche IP-Adresse zu geben. 
 	\item[route] Definiert die hinter dem Client liegenden IP-Adressen auf die von Serverseite aus zugegriffen werden kann.
-	\item[push] IP-Adressraum der an den Client ''gepusht'' werden, die der Client annehmen darf. 
-	\item[client-config-dir] Pfadangabe zur Clientkonfiguration
+	\item[push] IP-Adressraum der an den Client ''gepusht'' wird, die der Client annehmen darf. 
+	\item[client-config-dir] Pfadangabe zur Clientkonfiguration.
 	\item[keepalive] Gibt an, dass nach 10 Sekunden Inaktivität ein Ping an den Client gesendet wird, nach 120 Sekunden Inaktivität wird ein weiterer Versuch unternommen sich mit dem Client zu verbinden.
 	\item[cipher] Kryptographische Chiffre, über die die Verbindung zwischen Client und Server verschlüsselt wird. Dies muss beim Client der gleiche Chiffre sein.
 	\item[comp-lzo] Aktiviert die Kompression der Verbindung, dies muss auch beim Client aktiviert sein.
 	\item[user] Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nobody gesetzt, da zum Starten eines VPN's Rootrechte benötigt werden. Dies ist aber während der Sitzung nicht gewollt.
-	\item[group]Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf nogroup gesetzt, da zum Starten eines VPN's Rootrechte benötigt werden und dies aber während der Sitzung nicht gewollt ist.
+	\item[group]Nach der Initialisierung werden die Rechte des OpenVPN Nutzers auf "nogroup" gesetzt, da zum Starten eines VPN's Rootrechte benötigt werden und dies aber während der Sitzung nicht gewollt ist.
 	\item[persist-key] Sichert vor einem Keepalive Neustart die Schlüssel, um diese nicht nochmals erzeugen zu müssen.
 	\item[persist-tun] Ähnlich wie persist-key, nur für das tun-interface.  
-	\item[verb 3] Logging Optionen, über diese Einstellung kann die Genauigkeit des Loggens eingestellt werden.
+	\item[verb 3] Logging-Optionen, über diese Einstellung kann die Genauigkeit des Loggens eingestellt werden.
 \end{description}
 
 \subsubsection{Client Firma B}
-Ähnlich wie beim Server der Firma A, wie im Kapitel-teil zuvor, wird der Client der Firma B eingerichtet. Allerdings wird hier die ''client.conf'' benötigt und es wird kein ''client\_conf'' Verzeichnis benötigt. Nachfolgend wird in der Auflistung  die Konfigurationsdatei gezeigt und die einzelnen Begriffe nochmals erklärt.\newline
+Ähnlich wie beim Server der Firma A, wie im Abschnitt zuvor beschrieben, wird der Client der Firma B eingerichtet. Allerdings wird hier die ''client.conf'' benötigt und es wird kein ''client\_conf'' Verzeichnis benötigt. Nachfolgend wird in der Auflistung \ref{lst:clientconf} die Konfigurationsdatei gezeigt und die einzelnen Begriffe nochmals erklärt.\newline
 \lstset{
 	basicstyle=\footnotesize, frame=tb,
 	xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
@@ -324,10 +324,10 @@ verb 3
 \end{lstlisting}
 \vspace{\baselineskip}
 \begin{description}
-	\item[client] Spezifiziert den Client als Client
+	\item[client] Spezifiziert das System als Client.
 	\item[remote] Gibt die IP-Adresse und den Port des VPN-Servers an, mit dem sich der Client verbinden soll.
-	\item[tls-client] Spezifiziert den Client als tls-Client
-	\item[pull] holt sich über diesen Befehl die von Server ''gepushten'' Konfigurationen
+	\item[tls-client] Spezifiziert das System als tls-Client.
+	\item[pull] Holt sich über diesen Befehl die von Server ''gepushten'' Konfigurationen.
 \end{description}
 
 
